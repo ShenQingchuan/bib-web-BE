@@ -1,0 +1,29 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JSON Web Token secret key."
+    },
+    {
+      "name": "jwt.subject",
+      "type": "java.lang.String",
+      "description": "JSON Web Token subject."
+    },
+    {
+      "name": "jwt.expires",
+      "type": "java.lang.String",
+      "description": "JSON Web Token expires time (millisecond)."
+    },
+    {
+      "name": "tencent-cloud.SecretId",
+      "type": "java.lang.String",
+      "description": "SecretId for Tencent Cloud."
+    },
+    {
+      "name": "tencent-cloud.SecretKey",
+      "type": "java.lang.String",
+      "description": "SecretKey for Tencent Cloud."
+    }
+  ]
+}
