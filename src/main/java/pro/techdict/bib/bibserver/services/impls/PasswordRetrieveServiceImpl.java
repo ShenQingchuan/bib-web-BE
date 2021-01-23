@@ -62,7 +62,11 @@ public class PasswordRetrieveServiceImpl implements PasswordRetrieveService {
   public boolean verifyAuthCodeForEmail(String email, String requestCode) {
     if (!StringUtils.hasLength(email)) return false;
     String savedCode = redisService.get(passwordRetrievePrefix + email);
-    return savedCode != null && savedCode.equals(requestCode);
+    if (savedCode != null && savedCode.equals(requestCode)) {
+      redisService.remove(passwordRetrievePrefix + email);
+      return true;
+    }
+    return false;
   }
 
   public void sendVerifyCodeEmailByTencentCloud(String sendCode, String destination) {
