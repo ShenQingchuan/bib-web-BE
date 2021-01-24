@@ -6,6 +6,7 @@ public enum CustomExceptionType {
     USER_NOT_FOUND_ERROR(400, "您所登录的用户不存在！"),
     TOKEN_EXPIRED_ERROR(401, "您的令牌已经过期，请重新登录！"),
     UNAUTHORIZED_ERROR(401, "您还没有登录，无法访问该接口！"),
+    PASSWORD_RETRIEVE_EMAIL_NOTFOUND(404, "您要找回密码的邮箱地址未曾在本站注册！"),
     FORBIDDEN_ERROR(403, "您没有足够的权限进行该操作！"),
     SERVER_SIDE_ERROR(500, "系统出现异常，请稍后再试或联系开发团队！"),
     TENCENT_CLOUD_SDK_ERROR(909, "后端腾讯云服务出错，请联系开发团队！"),

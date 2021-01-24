@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import pro.techdict.bib.bibserver.configs.TencentCloudSecretProperties;
+import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.services.PasswordRetrieveService;
@@ -24,12 +25,18 @@ import java.util.Random;
 public class PasswordRetrieveServiceImpl implements PasswordRetrieveService {
   private final RedisService redisService;
   private final TencentCloudSecretProperties tencentCloudSecretProperties;
+  private final UserRepository userRepository;
 
   private final String passwordRetrievePrefix = "PRVCode:";
 
-  public PasswordRetrieveServiceImpl(RedisService redisService, TencentCloudSecretProperties tencentCloudSecretProperties) {
+  public PasswordRetrieveServiceImpl(
+      RedisService redisService,
+      TencentCloudSecretProperties tencentCloudSecretProperties,
+      UserRepository userRepository
+  ) {
     this.redisService = redisService;
     this.tencentCloudSecretProperties = tencentCloudSecretProperties;
+    this.userRepository = userRepository;
   }
 
   /**
@@ -43,6 +50,10 @@ public class PasswordRetrieveServiceImpl implements PasswordRetrieveService {
     Random random = new Random();
     for (int i = 0; i < 6; i++) {
       stringBuilder.append(random.nextInt(10));
+    }
+
+    if (userRepository.findByEmail(email).isEmpty()) {
+      throw new CustomException(CustomExceptionType.PASSWORD_RETRIEVE_EMAIL_NOTFOUND);
     }
 
     long passwordRetrieveExpires = 7200; // 验证码 2 小时过期

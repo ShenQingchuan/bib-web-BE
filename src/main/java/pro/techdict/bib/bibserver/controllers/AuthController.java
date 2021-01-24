@@ -58,7 +58,10 @@ public class AuthController {
       passwordRetrieveService.generateVerifyCodeByEmail(email);
       return HttpResponse.success("已发送验证码到邮箱！");
     } catch (CustomException e) {
-      return HttpResponse.error(e.getType(), "发送验证码邮件失败！请联系开发团队！");
+      if (e.getType() == CustomExceptionType.TENCENT_CLOUD_SDK_ERROR) {
+        return HttpResponse.error(e.getType(), "发送验证码邮件失败！请联系开发团队！");
+      }
+      return HttpResponse.error(e);
     }
   }
 
