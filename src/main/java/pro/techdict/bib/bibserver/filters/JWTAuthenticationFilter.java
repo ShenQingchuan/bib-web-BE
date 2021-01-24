@@ -64,7 +64,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   protected void successfulAuthentication(HttpServletRequest request,
                                           HttpServletResponse response,
                                           FilterChain chain,
-                                          Authentication authResult) throws IOException, ServletException {
+                                          Authentication authResult) throws IOException {
 
     // 调用 getPrincipal() 方法会返回一个实现了 `UserDetails` 接口的对象，实现中以 `JWTUserDetails` 继承
     JWTUserDetails jwtUserDetails = (JWTUserDetails) authResult.getPrincipal();
@@ -80,10 +80,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     );
   }
 
-  // 验证失败时候调用的方法
+  // 验证失败，密码错误时候调用的方法
   @Override
-  protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-    throw new CustomException(CustomExceptionType.AUTHENTICATE_FAILED_ERROR, failed.getMessage());
+  protected void unsuccessfulAuthentication(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      AuthenticationException failed
+  ) throws IOException {
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(
+        new Gson().toJson(HttpResponse.fail("登录失败，密码错误！"))
+    );
   }
 
 }

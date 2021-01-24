@@ -8,4 +8,6 @@ public interface UserAuthService {
     UserAccount registerUser(String userName, String password, String phone, String email);
 
     UserAccount seekUserByEmail(String email);
+
+    boolean changePassword(String email, String newPassword);
 }

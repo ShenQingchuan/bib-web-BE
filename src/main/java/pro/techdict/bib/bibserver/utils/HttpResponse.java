@@ -58,6 +58,16 @@ public class HttpResponse {
         HttpResponse.setData(data);
         return HttpResponse;
     }
+    //
+    public static HttpResponse success(String message) {
+        HttpResponse HttpResponse = new HttpResponse();
+        HttpResponse.setResponseOk(true);
+        HttpResponse.setCode(200);
+        HttpResponse.setMessage(message);
+        HttpResponse.setData(null);
+        return HttpResponse;
+    }
+    // 请求成功的响应，即有信息也有数据
     public static HttpResponse success(String message, Object data) {
         HttpResponse HttpResponse = new HttpResponse();
         HttpResponse.setResponseOk(true);

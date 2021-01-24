@@ -41,4 +41,15 @@ public class UserAuthServiceImpl implements UserAuthService {
     Optional<UserAccount> user = userRepository.findByEmail(email);
     return user.orElse(null);
   }
+
+  @Override
+  public boolean changePassword(String email, String newPassword) {
+    Optional<UserAccount> user = userRepository.findByEmail(email);
+    if (user.isPresent()) {
+      user.get().setPassword(bCryptPasswordEncoder.encode(newPassword));
+      userRepository.save(user.get());
+      return true;
+    }
+    return false;
+  }
 }

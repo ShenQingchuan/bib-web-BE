@@ -3,6 +3,7 @@ package pro.techdict.bib.bibserver.controllers;
 import org.springframework.web.bind.annotation.*;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
+import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.services.PasswordRetrieveService;
 import pro.techdict.bib.bibserver.services.impls.UserAuthServiceImpl;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
@@ -65,8 +66,12 @@ public class AuthController {
   public HttpResponse passwordRetrieveVerify(@RequestBody Map<String, String> requestBody) {
     String email = requestBody.get("userEmail");
     String requestCode = requestBody.get("vcode");
+    String newPassword = requestBody.get("newPassword");
     if (!passwordRetrieveService.verifyAuthCodeForEmail(email, requestCode)) {
         return HttpResponse.fail("验证码错误，请核对后再试！");
+    }
+    if (!userAuthService.changePassword(email, newPassword)) {
+      return HttpResponse.error(new CustomException(CustomExceptionType.CHANGE_PASSWORD_FAILED));
     }
     return HttpResponse.success("验证通过！");
   }
