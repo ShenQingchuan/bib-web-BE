@@ -77,4 +77,12 @@ public class HttpResponse {
         return HttpResponse;
     }
 
+    public HttpResponse putCode(int code) {
+        this.code = code;
+        return this;
+    }
+    public HttpResponse putMessage(String message) {
+        this.message = message;
+        return this;
+    }
 }

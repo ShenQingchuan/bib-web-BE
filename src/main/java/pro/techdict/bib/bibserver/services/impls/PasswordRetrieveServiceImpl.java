@@ -56,10 +56,10 @@ public class PasswordRetrieveServiceImpl implements PasswordRetrieveService {
       throw new CustomException(CustomExceptionType.PASSWORD_RETRIEVE_EMAIL_NOTFOUND);
     }
 
-    long passwordRetrieveExpires = 7200; // 验证码 2 小时过期
+    long passwordRetrieveExpires = 7200; // 邮箱验证码 2 小时过期
     // 发送邮件
     sendVerifyCodeEmailByTencentCloud(stringBuilder.toString(), email);
-    // 验证码并存储到 redis 中
+    // 验证码存储到 redis 中
     redisService.set(passwordRetrievePrefix + email, stringBuilder.toString());
     redisService.expire(passwordRetrievePrefix + email, passwordRetrieveExpires);
   }

@@ -33,4 +33,7 @@ public class UserAccount {
     @CreationTimestamp
     Date registerDate;
 
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @JoinColumn(name="detailsId", referencedColumnName = "detailsId")
+    private UserDetails userDetails;
 }

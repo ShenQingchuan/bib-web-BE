@@ -24,6 +24,11 @@
       "name": "tencent-cloud.SecretKey",
       "type": "java.lang.String",
       "description": "SecretKey for Tencent Cloud."
+    },
+    {
+      "name": "tencent-cloud.smsSdkAppId",
+      "type": "java.lang.String",
+      "description": "SMS APP ID for Tencent Cloud."
     }
   ]
 }

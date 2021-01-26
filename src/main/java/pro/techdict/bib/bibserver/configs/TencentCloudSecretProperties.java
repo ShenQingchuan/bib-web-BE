@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 public class TencentCloudSecretProperties {
     private String SecretId;
     private String SecretKey;
+    private String smsSdkAppId;
 }

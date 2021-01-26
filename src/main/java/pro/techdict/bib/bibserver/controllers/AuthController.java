@@ -2,9 +2,11 @@ package pro.techdict.bib.bibserver.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import pro.techdict.bib.bibserver.entities.UserAccount;
+import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.services.PasswordRetrieveService;
+import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.impls.UserAuthServiceImpl;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 
@@ -17,10 +19,12 @@ public class AuthController {
 
   final UserAuthServiceImpl userAuthService;
   final PasswordRetrieveService passwordRetrieveService;
+  final RedisService redisService;
 
-  public AuthController(UserAuthServiceImpl userAuthService, PasswordRetrieveService passwordRetrieveService) {
+  public AuthController(UserAuthServiceImpl userAuthService, PasswordRetrieveService passwordRetrieveService, RedisService redisService) {
     this.userAuthService = userAuthService;
     this.passwordRetrieveService = passwordRetrieveService;
+    this.redisService = redisService;
   }
 
   @PostMapping("/register")
@@ -28,7 +32,19 @@ public class AuthController {
     String userName = requestBody.get("userName");
     String email = requestBody.get("userEmail");
     String password = requestBody.get("password");
-    String phone = requestBody.get("phone");
+    String phone = requestBody.get("userPhone");
+    String phoneVerify = requestBody.get("phoneVerify");
+
+    // 避免某账号重复注册
+    UserAuthServiceImpl.DUPLICATE_TYPES duplicate_types = userAuthService.checkAndNoDuplicate(userName, email, phone);
+    if (duplicate_types != UserAuthServiceImpl.DUPLICATE_TYPES.PASS) {
+      return HttpResponse.fail(duplicate_types.toString());
+    }
+
+    if (!redisService.get(UserAuthServiceImpl.smsCodePrefix + phone).equals(phoneVerify)) {
+      return HttpResponse.fail("短信验证码输入不正确！");
+    } else redisService.remove(UserAuthServiceImpl.smsCodePrefix + phone); // 删除短信验证码缓存
+
     UserAccount newUser = userAuthService.registerUser(userName, password, phone, email);
     // 屏蔽 password 字段
     HashMap<String, Object> newUserReturn = new HashMap<>();
@@ -79,4 +95,22 @@ public class AuthController {
     return HttpResponse.success("验证通过！");
   }
 
+  @GetMapping("/getUserDetails")
+  public HttpResponse getUserDetails(@RequestParam("uid") Long uid) {
+    UserDetails userDetails = userAuthService.getUserDetails(uid);
+    if (userDetails != null) {
+      return HttpResponse.success("获取用户详细信息成功！", userDetails);
+    } else return HttpResponse.fail("未找到该用户的详细信息！");
+  }
+
+  @PostMapping("/sendSmsCode")
+  public HttpResponse sendSmsCode(@RequestBody Map<String, String> requestBody) {
+    String phone = requestBody.get("userPhone");
+    try {
+      userAuthService.sendSmsVerifyCode(phone);
+      return HttpResponse.success("验证码发送成功");
+    } catch (CustomException e) {
+      return HttpResponse.error(e);
+    }
+  }
 }
