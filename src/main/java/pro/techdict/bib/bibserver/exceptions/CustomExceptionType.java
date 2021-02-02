@@ -11,6 +11,7 @@ public enum CustomExceptionType {
     SERVER_SIDE_ERROR(500, "系统出现异常，请稍后再试或联系开发团队！"),
     TENCENT_CLOUD_SDK_ERROR(909, "后端腾讯云服务出错，请联系开发团队！"),
     CHANGE_PASSWORD_FAILED(911, "修改密码失败！"),
+    ACCESS_LIMIT_ERROR(941, "接口限制频率出错，请联系开发团队！"),
     OTHER_ERROR(999, "系统出现未知异常，请联系开发团队！"),
     ;
 
