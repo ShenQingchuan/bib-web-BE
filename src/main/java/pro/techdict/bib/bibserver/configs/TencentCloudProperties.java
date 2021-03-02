@@ -7,8 +7,10 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "tencent-cloud")
 @Data
-public class TencentCloudSecretProperties {
+public class TencentCloudProperties {
     private String SecretId;
     private String SecretKey;
     private String smsSdkAppId;
+    private String cosBucket;
+    private String cosRegion;
 }

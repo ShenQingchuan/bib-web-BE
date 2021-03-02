@@ -29,6 +29,16 @@
       "name": "tencent-cloud.smsSdkAppId",
       "type": "java.lang.String",
       "description": "SMS APP ID for Tencent Cloud."
+    },
+    {
+      "name": "tencent-cloud.cosBucket",
+      "type": "java.lang.String",
+      "description": "COS Bucket name for Tencent Cloud."
+    },
+    {
+      "name": "tencent-cloud.cosRegion",
+      "type": "java.lang.String",
+      "description": "COS Region for Tencent Cloud."
     }
   ]
 }

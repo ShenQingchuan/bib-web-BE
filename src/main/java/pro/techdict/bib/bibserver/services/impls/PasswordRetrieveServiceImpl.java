@@ -11,7 +11,7 @@ import com.tencentcloudapi.ses.v20201002.models.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import pro.techdict.bib.bibserver.configs.TencentCloudSecretProperties;
+import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
@@ -24,18 +24,18 @@ import java.util.Random;
 @Service
 public class PasswordRetrieveServiceImpl implements PasswordRetrieveService {
   private final RedisService redisService;
-  private final TencentCloudSecretProperties tencentCloudSecretProperties;
+  private final TencentCloudProperties tencentCloudProperties;
   private final UserRepository userRepository;
 
   private final String passwordRetrievePrefix = "PRVCode:";
 
   public PasswordRetrieveServiceImpl(
       RedisService redisService,
-      TencentCloudSecretProperties tencentCloudSecretProperties,
+      TencentCloudProperties tencentCloudProperties,
       UserRepository userRepository
   ) {
     this.redisService = redisService;
-    this.tencentCloudSecretProperties = tencentCloudSecretProperties;
+    this.tencentCloudProperties = tencentCloudProperties;
     this.userRepository = userRepository;
   }
 
@@ -83,8 +83,8 @@ public class PasswordRetrieveServiceImpl implements PasswordRetrieveService {
   public void sendVerifyCodeEmailByTencentCloud(String sendCode, String destination) {
     try {
       Credential cred = new Credential(
-          tencentCloudSecretProperties.getSecretId(),
-          tencentCloudSecretProperties.getSecretKey()
+          tencentCloudProperties.getSecretId(),
+          tencentCloudProperties.getSecretKey()
       );
 
       HttpProfile httpProfile = new HttpProfile();

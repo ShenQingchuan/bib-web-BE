@@ -13,10 +13,8 @@ import pro.techdict.bib.bibserver.configs.AccessLimit;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 import pro.techdict.bib.bibserver.utils.IPUtils;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
@@ -86,7 +84,7 @@ public class AccessLimitIntercept implements HandlerInterceptor {
     return true;
   }
 
-  private boolean setResponse(HttpResponse returns, HttpServletResponse response) {
+  private boolean setResponse(HttpResponse returns, HttpServletResponse response)  {
     try {
       response.setContentType("application/json");
       response.setCharacterEncoding("UTF-8");

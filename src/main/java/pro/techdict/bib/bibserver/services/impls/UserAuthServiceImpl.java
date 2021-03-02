@@ -10,7 +10,7 @@ import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pro.techdict.bib.bibserver.configs.TencentCloudSecretProperties;
+import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
@@ -28,7 +28,7 @@ public class UserAuthServiceImpl implements UserAuthService {
   private final RedisService redisService;
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
-  private final TencentCloudSecretProperties tencentCloudSecretProperties;
+  private final TencentCloudProperties tencentCloudProperties;
 
   public enum DUPLICATE_TYPES {
     PASS,
@@ -57,12 +57,12 @@ public class UserAuthServiceImpl implements UserAuthService {
   public UserAuthServiceImpl(
       RedisService redisService, BCryptPasswordEncoder bCryptPasswordEncoder,
       UserRepository userRepository,
-      TencentCloudSecretProperties tencentCloudSecretProperties
+      TencentCloudProperties tencentCloudProperties
   ) {
     this.redisService = redisService;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.userRepository = userRepository;
-    this.tencentCloudSecretProperties = tencentCloudSecretProperties;
+    this.tencentCloudProperties = tencentCloudProperties;
   }
 
   @Override
@@ -118,8 +118,8 @@ public class UserAuthServiceImpl implements UserAuthService {
     try {
 
       Credential cred = new Credential(
-          tencentCloudSecretProperties.getSecretId(),
-          tencentCloudSecretProperties.getSecretKey()
+          tencentCloudProperties.getSecretId(),
+          tencentCloudProperties.getSecretKey()
       );
 
       HttpProfile httpProfile = new HttpProfile();
@@ -134,7 +134,7 @@ public class UserAuthServiceImpl implements UserAuthService {
       req.setPhoneNumberSet(phoneNumberSet1);
       req.setTemplateID("853982");
       req.setTemplateParamSet(templateParamSet1);
-      req.setSmsSdkAppid(tencentCloudSecretProperties.getSmsSdkAppId());
+      req.setSmsSdkAppid(tencentCloudProperties.getSmsSdkAppId());
       req.setSign("techdictpro");
 
       SendSmsResponse sendSmsResponse = client.SendSms(req);
