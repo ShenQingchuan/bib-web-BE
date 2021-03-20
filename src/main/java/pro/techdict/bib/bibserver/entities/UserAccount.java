@@ -1,10 +1,12 @@
 package pro.techdict.bib.bibserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.Transient;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -24,16 +26,28 @@ public class UserAccount {
     @Column(unique = true)
     String email;
 
-    @Transient
+    @JsonIgnore
     String password;
+
     String role;
 
+    @JsonIgnore
     Date lastLoginTime;
 
+    @JsonIgnore
     @CreationTimestamp
     Date registerDate;
 
+    @JsonIgnoreProperties({ "userAccount" })
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @JoinColumn(name="detailsId", referencedColumnName = "detailsId")
-    private UserDetails userDetails;
+    UserDetails userDetails;
+
+    @JsonIgnoreProperties({ "memberList", "creator" })
+    @OneToMany(mappedBy = "creator")
+    List<Organization> createdOrgs;
+
+    @JsonIgnoreProperties({ "memberList", "creator" })
+    @ManyToMany(mappedBy = "memberList")
+    List<Organization> joinedOrgs;
 }

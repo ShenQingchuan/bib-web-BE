@@ -12,14 +12,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 import pro.techdict.bib.bibserver.configs.JWTProperties;
-import pro.techdict.bib.bibserver.exceptions.CustomException;
-import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 import pro.techdict.bib.bibserver.utils.JWTUserDetails;
 import pro.techdict.bib.bibserver.utils.JWTUtils;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,14 +28,14 @@ import java.util.Map;
 
 @Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-  private AuthenticationManager authenticationManager;
+  private final AuthenticationManager authenticationManager;
   private byte[] requestInputStreamBytes;
   JWTProperties jwtProperties;
 
   public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTProperties jwtProperties) {
     this.authenticationManager = authenticationManager;
     this.jwtProperties = jwtProperties;
-    super.setFilterProcessesUrl("/auth/login");
+    super.setFilterProcessesUrl("/user/login");
   }
 
   @Data
@@ -66,7 +63,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                           FilterChain chain,
                                           Authentication authResult) throws IOException {
 
-    // 调用 getPrincipal() 方法会返回一个实现了 `UserDetails` 接口的对象，实现中以 `JWTUserDetails` 继承
+    // 调用 getPrincipal() 方法会返回一个实现了 `org.springframework.security.core.userdetails.UserDetails` 接口的对象，
+    // 实现中以 `JWTUserDetails` 继承
     JWTUserDetails jwtUserDetails = (JWTUserDetails) authResult.getPrincipal();
     UserNameLoginFormModel form = new ObjectMapper().readValue(requestInputStreamBytes, UserNameLoginFormModel.class);
     String token = JWTUtils.makeJsonWebToken(jwtUserDetails, form.isRememberMe, jwtProperties);

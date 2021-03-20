@@ -12,49 +12,31 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.daos.UserRepository;
+import pro.techdict.bib.bibserver.entities.Organization;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
+import pro.techdict.bib.bibserver.models.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.services.RedisService;
-import pro.techdict.bib.bibserver.services.UserAuthService;
+import pro.techdict.bib.bibserver.services.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Slf4j
 @Service
-public class UserAuthServiceImpl implements UserAuthService {
+public class UserServiceImpl implements UserService {
   private final RedisService redisService;
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final TencentCloudProperties tencentCloudProperties;
 
-  public enum DUPLICATE_TYPES {
-    PASS,
-    WITH_USERNAME {
-      @Override
-      public java.lang.String toString() {
-        return "该用户名已经被注册！";
-      }
-    },
-    WITH_EMAIL {
-      @Override
-      public java.lang.String toString() {
-        return "该邮箱地址已经被注册！";
-      }
-    },
-    WITH_PHONE {
-      @Override
-      public java.lang.String toString() {
-        return "该手机号码已经被注册！";
-      }
-    },
-  }
-
   public final static String smsCodePrefix = "SMSCode:+86";
 
-  public UserAuthServiceImpl(
+  public UserServiceImpl(
       RedisService redisService, BCryptPasswordEncoder bCryptPasswordEncoder,
       UserRepository userRepository,
       TencentCloudProperties tencentCloudProperties
@@ -73,6 +55,8 @@ public class UserAuthServiceImpl implements UserAuthService {
     user.setPhone(phone);
     user.setEmail(email);
     user.setRole("ROLE_USER");
+    user.setJoinedOrgs(new ArrayList<>());
+    user.setCreatedOrgs(new ArrayList<>());
 
     UserDetails userDetails = new UserDetails();
     userDetails.setAvatarURL("");
@@ -102,9 +86,21 @@ public class UserAuthServiceImpl implements UserAuthService {
   }
 
   @Override
-  public UserDetails getUserDetails(Long userId) {
+  public UserDetails getUserDetailsById(Long userId) {
     Optional<UserAccount> userAccount = userRepository.findById(userId);
     return userAccount.map(UserAccount::getUserDetails).orElse(null);
+  }
+
+  @Override
+  public UserDetails getUserDetailsByName(String userName) {
+    Optional<UserAccount> userAccount = userRepository.findByUserName(userName);
+    return userAccount.map(UserAccount::getUserDetails).orElse(null);
+  }
+
+  @Override
+  public List<Organization> getJoinedOrgsByName(String userName) {
+    Optional<UserAccount> user = userRepository.findByUserName(userName);
+    return user.map(UserAccount::getJoinedOrgs).orElse(null);
   }
 
   @Override

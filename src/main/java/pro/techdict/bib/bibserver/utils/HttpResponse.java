@@ -9,7 +9,7 @@ import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
  */
 @Data
 public class HttpResponse {
-    private boolean isResponseOk;  // 请求是否处理成功
+    private boolean responseOk;  // 请求是否处理成功
     private int code; // 请求响应代码
     private String message;  // 请求结果描述信息
     private Object data; // 请求结果数据（通常用于查询操作）

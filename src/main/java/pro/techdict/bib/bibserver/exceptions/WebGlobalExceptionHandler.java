@@ -35,7 +35,7 @@ public class WebGlobalExceptionHandler {
         e.printStackTrace();
 
         return HttpResponse.error(new CustomException(
-                CustomExceptionType.OTHER_ERROR, e.getMessage()));
+                CustomExceptionType.SERVER_SIDE_ERROR, e.getMessage()));
     }
 
 }

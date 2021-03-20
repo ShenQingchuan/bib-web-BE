@@ -11,6 +11,7 @@ import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.utils.JWTUserDetails;
 
 import java.util.Optional;
+import java.util.Date;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -27,6 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (userAccount.isEmpty()) {
             throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
         }
-        return new JWTUserDetails(userAccount.get());
+        // update lastLoginTime
+        Date now = new Date();
+        userAccount.get().setLastLoginTime(now);
+        UserAccount updated = userRepository.save(userAccount.get());
+
+        return new JWTUserDetails(updated);
     }
 }

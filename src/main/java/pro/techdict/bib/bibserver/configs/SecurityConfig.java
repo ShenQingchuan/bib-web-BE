@@ -36,8 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                // 指明需要验证匹配单元
-                .antMatchers("/auth/getUserDetails").authenticated()
+                // 指明需要验证 token 匹配单元
                 // TODO: 列出更多需匹配...
                 // 其他都放行
                 .anyRequest().permitAll()

@@ -1,5 +1,6 @@
 package pro.techdict.bib.bibserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,10 +20,11 @@ public class UserDetails {
   String address;
   String profession;
 
-  @Transient
+  @JsonIgnore
   @OneToOne(mappedBy = "userDetails")
   private UserAccount userAccount;
 
+  @JsonIgnore
   @UpdateTimestamp
   Date updateTime;
 }

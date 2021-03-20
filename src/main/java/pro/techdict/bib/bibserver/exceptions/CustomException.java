@@ -1,8 +1,6 @@
 package pro.techdict.bib.bibserver.exceptions;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class CustomException extends RuntimeException {

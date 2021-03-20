@@ -19,6 +19,7 @@ public class JWTUtils {
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .setSubject(userDetails.getUsername())
                 .claim("uid", userDetails.getUid())
+                .claim("avatarURL", userDetails.getAvatarURL())
                 .setExpiration(expires)
                 .setIssuer(jwtProperties.getIssuer()) // 发行主体
                 .setIssuedAt(now)// 获取当前时间为发行日期
