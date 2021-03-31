@@ -15,8 +15,9 @@ import java.util.List;
 @Table
 @Data
 public class Organization {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
   @Column(unique = true)
@@ -35,10 +36,11 @@ public class Organization {
   Date lastUpdateTime;
 
   @ManyToOne
-  @JsonIgnoreProperties({ "createdOrgs", "joinedOrgs" })
+  @JsonIgnoreProperties({"createdOrgs", "joinedOrgs"})
   UserAccount creator;
 
   @ManyToMany
-  @JsonIgnoreProperties({ "createdOrgs", "joinedOrgs" })
+  @JsonIgnoreProperties({"createdOrgs", "joinedOrgs"})
   List<UserAccount> memberList;
+
 }

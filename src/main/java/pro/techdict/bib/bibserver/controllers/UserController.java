@@ -103,19 +103,6 @@ public class UserController {
     return HttpResponse.success("验证通过！");
   }
 
-  @GetMapping("/userDetails")
-  public HttpResponse getUserDetails(
-      @RequestParam(value = "uid", required = false) Long uid,
-      @RequestParam(value = "userName", required = false) String userName
-  ) {
-    UserDetails userDetails = uid != null
-        ? userService.getUserDetailsById(uid)
-        : userService.getUserDetailsByName(userName);
-    if (userDetails != null) {
-      return HttpResponse.success("获取用户详细信息成功！", userDetails);
-    } else return HttpResponse.fail("未找到该用户的详细信息！");
-  }
-
   @GetMapping("/joinedOrgs")
   public HttpResponse getUsersJoinedOrgs(
       @RequestParam("userName") String userName

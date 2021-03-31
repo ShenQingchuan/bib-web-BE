@@ -1,5 +1,6 @@
 package pro.techdict.bib.bibserver.services.impls;
 
+import com.qcloud.cos.utils.StringUtils;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.common.profile.ClientProfile;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
+import pro.techdict.bib.bibserver.daos.UserDetailsRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.entities.Organization;
 import pro.techdict.bib.bibserver.entities.UserAccount;
@@ -21,16 +23,14 @@ import pro.techdict.bib.bibserver.models.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
   private final RedisService redisService;
   private final UserRepository userRepository;
+  private final UserDetailsRepository detailsRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final TencentCloudProperties tencentCloudProperties;
 
@@ -39,11 +39,12 @@ public class UserServiceImpl implements UserService {
   public UserServiceImpl(
       RedisService redisService, BCryptPasswordEncoder bCryptPasswordEncoder,
       UserRepository userRepository,
-      TencentCloudProperties tencentCloudProperties
+      UserDetailsRepository detailsRepository, TencentCloudProperties tencentCloudProperties
   ) {
     this.redisService = redisService;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.userRepository = userRepository;
+    this.detailsRepository = detailsRepository;
     this.tencentCloudProperties = tencentCloudProperties;
   }
 
@@ -95,6 +96,28 @@ public class UserServiceImpl implements UserService {
   public UserDetails getUserDetailsByName(String userName) {
     Optional<UserAccount> userAccount = userRepository.findByUserName(userName);
     return userAccount.map(UserAccount::getUserDetails).orElse(null);
+  }
+
+  @Override
+  public UserDetails updateUserDetails(Map<String, String> newDetailsData) {
+    Long uid = Long.parseLong(newDetailsData.get("userId"));
+    Optional<UserAccount> user = userRepository.findById(uid);
+    if (user.isPresent()) {
+      UserDetails details = user.get().getUserDetails();
+      String address = newDetailsData.get("address"),
+          avatarURL = newDetailsData.get("avatarURL"),
+          introduce = newDetailsData.get("introduce"),
+          profession = newDetailsData.get("profession");
+      if (!StringUtils.isNullOrEmpty(address)) { details.setAddress(address); }
+      if (!StringUtils.isNullOrEmpty(avatarURL)) { details.setAvatarURL(avatarURL); }
+      if (!StringUtils.isNullOrEmpty(introduce)) { details.setIntroduce(introduce); }
+      if (!StringUtils.isNullOrEmpty(profession)) { details.setProfession(profession); }
+
+      UserDetails savedDetails = detailsRepository.save(details);
+      return savedDetails;
+    }
+
+    return null;
   }
 
   @Override
@@ -154,5 +177,22 @@ public class UserServiceImpl implements UserService {
     else if (userRepository.findByEmail(email).isPresent()) return DUPLICATE_TYPES.WITH_EMAIL;
     else if (userRepository.findByPhone(phone).isPresent()) return DUPLICATE_TYPES.WITH_PHONE;
     return DUPLICATE_TYPES.PASS;
+  }
+
+  @Override
+  public boolean followUser(Long srcUid, Long targetUid) {
+    Optional<UserAccount> srcUser = userRepository.findById(srcUid);
+    if (srcUser.isPresent()) {
+      Optional<UserAccount> targetUser = userRepository.findById(targetUid);
+      if (targetUser.isPresent()) {
+        srcUser.get().getFollowers().add(targetUser.get());
+        userRepository.save(srcUser.get());
+        return true;
+      }
+
+      return false;
+    }
+
+    return false;
   }
 }

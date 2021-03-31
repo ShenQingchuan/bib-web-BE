@@ -11,8 +11,9 @@ import java.util.Date;
 @Table
 @Data
 public class UserDetails {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long detailsId;
 
   String avatarURL;
@@ -27,4 +28,5 @@ public class UserDetails {
   @JsonIgnore
   @UpdateTimestamp
   Date updateTime;
+
 }

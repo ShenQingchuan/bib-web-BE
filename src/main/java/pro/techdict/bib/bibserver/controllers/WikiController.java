@@ -1,0 +1,9 @@
+package pro.techdict.bib.bibserver.controllers;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/wiki")
+public class WikiController {
+}

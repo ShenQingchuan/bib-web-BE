@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.utils.COSUtils;
-import pro.techdict.bib.bibserver.utils.COSUtils.ResultWithKey;
+import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class TencentCOSServiceImpl implements TencentCOSService {
    * @param files     文件集合
    */
   @Override
-  public List<ResultWithKey> uploadObjects(String directory, long userId, MultipartFile[] files) {
+  public List<COSUploadResultWithKey> uploadObjects(String directory, long userId, MultipartFile[] files) {
     COSCredentials credentials = new BasicCOSCredentials(
         tencentCloudProperties.getSecretId(),
         tencentCloudProperties.getSecretKey()
@@ -42,7 +42,7 @@ public class TencentCOSServiceImpl implements TencentCOSService {
     ClientConfig clientConfig = new ClientConfig(new Region(tencentCloudProperties.getCosRegion()));
     COSClient cosClient = new COSClient(credentials, clientConfig);
 
-    List<ResultWithKey> results = new ArrayList<>();
+    List<COSUploadResultWithKey> results = new ArrayList<>();
     for (MultipartFile file : files) {
       try {
         ObjectMetadata metadata = new ObjectMetadata();
@@ -56,7 +56,7 @@ public class TencentCOSServiceImpl implements TencentCOSService {
             file.getInputStream(), metadata
         );
         PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-        ResultWithKey resultWithKey = new ResultWithKey(
+        COSUploadResultWithKey resultWithKey = new COSUploadResultWithKey(
             key,
             putObjectResult
         );
