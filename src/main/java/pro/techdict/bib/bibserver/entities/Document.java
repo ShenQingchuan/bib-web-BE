@@ -11,13 +11,15 @@ import java.util.List;
 @Table
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Document extends BaseEntity {
+public class Document extends BaseEntity<Long> {
 
   String title;
   String contentAbstract;
 
   @Column(columnDefinition = "MEDIUMTEXT")
   String contentJSON; // ProseMirror 导出 doc.toJSON()
+
+  Boolean publicSharing; // 是否能分享为公开阅读
 
   @ManyToOne
   @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})

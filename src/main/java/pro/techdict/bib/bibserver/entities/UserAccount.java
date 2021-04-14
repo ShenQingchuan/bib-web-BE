@@ -3,7 +3,7 @@ package pro.techdict.bib.bibserver.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,11 +12,8 @@ import java.util.List;
 @Entity
 @Table
 @Data
-public class UserAccount {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long uid;
+@EqualsAndHashCode(callSuper = true)
+public class UserAccount extends BaseEntity<Long> {
 
   @Column(unique = true)
   String userName;
@@ -34,10 +31,6 @@ public class UserAccount {
 
   @JsonIgnore
   Date lastLoginTime;
-
-  @CreationTimestamp
-  @JsonIgnore
-  Date registerDate;
 
   @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @JsonIgnoreProperties({"userAccount"})

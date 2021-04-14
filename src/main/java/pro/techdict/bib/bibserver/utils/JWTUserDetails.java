@@ -19,7 +19,7 @@ public class JWTUserDetails implements UserDetails {
 
     // 可直接使用 UserEntity 创建 JWTUserDetails
     public JWTUserDetails(UserAccount user) {
-        uid = user.getUid();
+        uid = user.getId();
         userName = user.getUserName();
         password = user.getPassword();
         avatarURL = user.getUserDetails().getAvatarURL();

@@ -1,33 +1,35 @@
 package pro.techdict.bib.bibserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DocumentComment extends BaseEntity {
+public class DocumentComment extends BaseEntity<Long> {
 
   String content; // 评论内容
 
   @ManyToOne
-  @JsonIgnoreProperties({"comments"})
+  @JsonIgnore
   Document target;
 
   @ManyToOne
-  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs"})
+  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
   UserAccount creator;
 
   @ManyToMany
-  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs"})
+  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
   List<UserAccount> thumbUpUsers;
+
+  @OneToOne
+  @JsonIgnoreProperties({"phone", "email", "role", "introduce", "address", "profession"})
+  UserAccount replyTo;
 
 }

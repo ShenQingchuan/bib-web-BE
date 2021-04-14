@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserService {
   public UserServiceImpl(
       RedisService redisService, BCryptPasswordEncoder bCryptPasswordEncoder,
       UserRepository userRepository,
-      UserDetailsRepository detailsRepository, TencentCloudProperties tencentCloudProperties
+      UserDetailsRepository detailsRepository,
+      TencentCloudProperties tencentCloudProperties
   ) {
     this.redisService = redisService;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -113,8 +114,7 @@ public class UserServiceImpl implements UserService {
       if (!StringUtils.isNullOrEmpty(introduce)) { details.setIntroduce(introduce); }
       if (!StringUtils.isNullOrEmpty(profession)) { details.setProfession(profession); }
 
-      UserDetails savedDetails = detailsRepository.save(details);
-      return savedDetails;
+      return detailsRepository.save(details);
     }
 
     return null;
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
     } catch (TencentCloudSDKException e) {
       throw new CustomException(
           CustomExceptionType.TENCENT_CLOUD_SDK_ERROR,
-          "短信发送出现异常，错误信息: \n" + e.toString()
+          "短信发送出现异常，错误信息: \n" + e
       );
     }
   }

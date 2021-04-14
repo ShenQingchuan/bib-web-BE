@@ -11,7 +11,7 @@ import java.util.List;
 @Table
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Wiki extends BaseEntity {
+public class Wiki extends BaseEntity<Long> {
 
   String name; // 知识库名
   String description; // 知识库介绍

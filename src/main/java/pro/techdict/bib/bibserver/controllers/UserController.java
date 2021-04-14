@@ -3,7 +3,6 @@ package pro.techdict.bib.bibserver.controllers;
 import org.springframework.web.bind.annotation.*;
 import pro.techdict.bib.bibserver.entities.Organization;
 import pro.techdict.bib.bibserver.entities.UserAccount;
-import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.models.DUPLICATE_TYPES;
@@ -56,10 +55,10 @@ public class UserController {
     UserAccount newUser = userService.registerUser(userName, password, phone, email);
     // 屏蔽 password 字段
     HashMap<String, Object> newUserReturn = new HashMap<>();
-    newUserReturn.put("uid", newUser.getUid());
+    newUserReturn.put("uid", newUser.getId());
     newUserReturn.put("userName", newUser.getUserName());
     newUserReturn.put("role", newUser.getRole());
-    newUserReturn.put("registerDate", newUser.getRegisterDate());
+    newUserReturn.put("registerDate", newUser.getCreateTime());
     return HttpResponse.success("注册成功！", newUserReturn);
   }
 

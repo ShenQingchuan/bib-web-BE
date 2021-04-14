@@ -36,5 +36,6 @@ public interface UserService {
   UserDetails getUserDetailsById(Long userId);
   UserDetails getUserDetailsByName(String userName);
 
+  // 更新用户详细信息
   UserDetails updateUserDetails(Map<String, String> newDetailsData);
 }

@@ -2,19 +2,15 @@ package pro.techdict.bib.bibserver.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table
 @Data
-public class UserDetails {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long detailsId;
+@EqualsAndHashCode(callSuper = true)
+public class UserDetails extends BaseEntity<Long> {
 
   String avatarURL;
   String introduce;
@@ -24,9 +20,5 @@ public class UserDetails {
   @JsonIgnore
   @OneToOne(mappedBy = "userDetails")
   private UserAccount userAccount;
-
-  @JsonIgnore
-  @UpdateTimestamp
-  Date updateTime;
 
 }
