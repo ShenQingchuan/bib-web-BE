@@ -1,7 +1,7 @@
 package pro.techdict.bib.bibserver.services;
 
 import pro.techdict.bib.bibserver.entities.Organization;
-import pro.techdict.bib.bibserver.models.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.OrganizationScope;
 
 public interface OrganizationService {
 

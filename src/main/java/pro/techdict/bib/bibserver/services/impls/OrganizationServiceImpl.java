@@ -7,7 +7,7 @@ import pro.techdict.bib.bibserver.entities.Organization;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
-import pro.techdict.bib.bibserver.models.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.OrganizationScope;
 import pro.techdict.bib.bibserver.services.OrganizationService;
 
 import java.util.ArrayList;

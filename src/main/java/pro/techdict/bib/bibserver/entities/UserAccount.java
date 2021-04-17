@@ -63,10 +63,6 @@ public class UserAccount extends BaseEntity<Long> {
   @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers"})
   List<Document> likedDocs; // 多用户对多文档（点赞的）
 
-  @ManyToMany(mappedBy = "starUsers")
-  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers"})
-  List<Document> staredDocs; // 多用户对多文档（收藏的）
-
   // ———————— 用户 & 知识库
 
   @OneToMany(mappedBy = "creator")

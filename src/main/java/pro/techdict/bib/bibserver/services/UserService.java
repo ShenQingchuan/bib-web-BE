@@ -3,7 +3,7 @@ package pro.techdict.bib.bibserver.services;
 import pro.techdict.bib.bibserver.entities.Organization;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
-import pro.techdict.bib.bibserver.models.DUPLICATE_TYPES;
+import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 
 import java.util.List;
 import java.util.Map;

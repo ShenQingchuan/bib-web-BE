@@ -15,7 +15,7 @@ public class JWTUserDetails implements UserDetails {
     private String userName;
     private String password;
     private String avatarURL;
-    private Collection<? extends GrantedAuthority> authorities;
+    private String role;
 
     // 可直接使用 UserEntity 创建 JWTUserDetails
     public JWTUserDetails(UserAccount user) {
@@ -23,12 +23,12 @@ public class JWTUserDetails implements UserDetails {
         userName = user.getUserName();
         password = user.getPassword();
         avatarURL = user.getUserDetails().getAvatarURL();
-        authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        role = user.getRole();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
+        return Collections.singleton(new SimpleGrantedAuthority(role));
     }
     @Override
     public String getPassword() {
@@ -61,4 +61,5 @@ public class JWTUserDetails implements UserDetails {
     public String getAvatarURL() {
         return avatarURL;
     }
+    public String getRole() { return role; }
 }

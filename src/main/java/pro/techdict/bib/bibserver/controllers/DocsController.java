@@ -1,12 +1,9 @@
 package pro.techdict.bib.bibserver.controllers;
 
-import com.tencentcloudapi.common.exception.TencentCloudSDKException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
+import pro.techdict.bib.bibserver.dtos.DocumentViewData;
+import pro.techdict.bib.bibserver.services.DocumentService;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
@@ -20,9 +17,14 @@ import java.util.Map;
 public class DocsController {
 
   private final TencentCOSService cosService;
+  private final DocumentService documentService;
 
-  public DocsController(TencentCOSService cosService) {
+  public DocsController(
+      TencentCOSService cosService,
+      DocumentService documentService
+  ) {
     this.cosService = cosService;
+    this.documentService = documentService;
   }
 
   @PostMapping("/uploadImages")
@@ -36,4 +38,14 @@ public class DocsController {
     data.put("uploadResults", uploadResults);
     return HttpResponse.success("上传图片成功！", data);
   }
+
+  @PostMapping("/new")
+  public HttpResponse newDoc(
+      @RequestBody Map<String, String> requestBody
+  ) {
+    Long userId = Long.parseLong(requestBody.get("userId"));
+    DocumentViewData viewData = documentService.initializeNewDocument(userId);
+    return HttpResponse.success("新建文档成功！", viewData);
+  }
+
 }

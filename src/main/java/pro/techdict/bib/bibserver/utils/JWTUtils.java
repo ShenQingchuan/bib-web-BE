@@ -1,15 +1,13 @@
 package pro.techdict.bib.bibserver.utils;
 
-import io.jsonwebtoken.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import pro.techdict.bib.bibserver.configs.JWTProperties;
-import pro.techdict.bib.bibserver.entities.UserAccount;
 
 import java.util.Date;
 import java.util.Objects;
 
-@Component
 public class JWTUtils {
     // 生成token
     public static String makeJsonWebToken(JWTUserDetails userDetails, boolean isRememberMe, JWTProperties jwtProperties) {
@@ -19,6 +17,7 @@ public class JWTUtils {
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .setSubject(userDetails.getUsername())
                 .claim("uid", userDetails.getUid())
+                .claim("role", userDetails.getRole())
                 .claim("avatarURL", userDetails.getAvatarURL())
                 .setExpiration(expires)
                 .setIssuer(jwtProperties.getIssuer()) // 发行主体
@@ -26,7 +25,7 @@ public class JWTUtils {
                 .compact();
     }
 
-    // 解析token
+    // 解析 token
     public static Claims parserToken(String token, JWTProperties jwtProperties) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtProperties.getSecret())

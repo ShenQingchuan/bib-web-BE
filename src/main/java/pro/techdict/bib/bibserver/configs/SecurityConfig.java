@@ -27,7 +27,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(JWTProperties jwtProperties, @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+    public SecurityConfig(
+        JWTProperties jwtProperties,
+        @Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService
+    ) {
         this.jwtProperties = jwtProperties;
         this.userDetailsService = userDetailsService;
     }
@@ -36,10 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                // 指明需要验证 token 匹配单元
-                // TODO: 列出更多需匹配...
-                // 其他都放行
-                .anyRequest().permitAll()
+                // TODO: 列出所有公开公共接口...
+                .antMatchers(
+                    "/user/register",
+                    "/user/sendSmsCode"
+                ).permitAll()
+                // 其他都验证
+                .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtProperties))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtProperties))

@@ -48,7 +48,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
   @SneakyThrows
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+  public Authentication attemptAuthentication(
+      HttpServletRequest request,
+      HttpServletResponse response
+  ) throws AuthenticationException {
     ServletInputStream stream = request.getInputStream();
     requestInputStreamBytes = StreamUtils.copyToString(stream, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8);
     UserNameLoginFormModel form = new ObjectMapper().readValue(requestInputStreamBytes, UserNameLoginFormModel.class);

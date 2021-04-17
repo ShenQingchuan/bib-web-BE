@@ -1,4 +1,4 @@
-package pro.techdict.bib.bibserver.models;
+package pro.techdict.bib.bibserver.beans;
 
 public enum DUPLICATE_TYPES {
   PASS,

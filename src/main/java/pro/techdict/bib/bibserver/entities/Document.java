@@ -16,10 +16,7 @@ public class Document extends BaseEntity<Long> {
   String title;
   String contentAbstract;
 
-  @Column(columnDefinition = "MEDIUMTEXT")
-  String contentJSON; // ProseMirror 导出 doc.toJSON()
-
-  Boolean publicSharing; // 是否能分享为公开阅读
+  Boolean publicSharing = false; // 是否能分享为公开阅读
 
   @ManyToOne
   @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
@@ -32,10 +29,6 @@ public class Document extends BaseEntity<Long> {
   @ManyToMany
   @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
   List<UserAccount> collaborators; // 多文档对多用户（协作）
-
-  @ManyToMany
-  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
-  List<UserAccount> starUsers; // 多文档对多用户（收藏）
 
   @ManyToOne
   @JsonIgnoreProperties({"documents"})

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pro.techdict.bib.bibserver.entities.Organization;
-import pro.techdict.bib.bibserver.models.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.OrganizationScope;
 import pro.techdict.bib.bibserver.services.OrganizationService;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 

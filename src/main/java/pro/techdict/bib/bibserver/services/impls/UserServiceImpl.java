@@ -19,7 +19,7 @@ import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
-import pro.techdict.bib.bibserver.models.DUPLICATE_TYPES;
+import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
 

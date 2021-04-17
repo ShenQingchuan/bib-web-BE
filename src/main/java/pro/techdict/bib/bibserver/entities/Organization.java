@@ -2,7 +2,7 @@ package pro.techdict.bib.bibserver.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import pro.techdict.bib.bibserver.models.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.OrganizationScope;
 
 import javax.persistence.*;
 import java.util.List;
