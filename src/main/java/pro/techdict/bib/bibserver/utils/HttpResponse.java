@@ -12,6 +12,13 @@ public class HttpResponse {
     private boolean responseOk;  // 请求是否处理成功
     private int code; // 请求响应代码
     private String message;  // 请求结果描述信息
+
+    public HttpResponse setSilence(boolean silence) {
+        this.silence = silence;
+        return this;
+    }
+
+    private boolean silence = false; // 请求返回后 前端是否静默（即可能不显示任何提示）
     private Object data; // 请求结果数据（通常用于查询操作）
 
     // 请求出现异常时的响应数据封装

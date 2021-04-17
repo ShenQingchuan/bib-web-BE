@@ -21,13 +21,14 @@ public class DocumentViewData {
   List<DocumentCommentDto> comments;
   Boolean thumbsUped = false;
   WikiSimpleDto inWiki;
+  Boolean publicSharing;
 
   public DocumentViewData fromEntity(Document docEntity) {
     if (docEntity == null) return null;
 
     this.id = docEntity.getId();
-    this.title = docEntity.getTitle();
-    this.contentAbstract = docEntity.getContentAbstract();
+    this.title = Objects.requireNonNullElse(docEntity.getTitle(), "");
+    this.contentAbstract = Objects.requireNonNullElse(docEntity.getContentAbstract(), "");
     this.creator = new UserSimpleDto().fromEntity(docEntity.getCreator());
 
     this.thumbUpUsers = Objects.requireNonNullElse(
@@ -52,6 +53,7 @@ public class DocumentViewData {
     ).collect(Collectors.toList());
 
     this.inWiki = new WikiSimpleDto().fromEntity(docEntity.getInWiki());
+    this.publicSharing = docEntity.getPublicSharing();
 
     return this;
   }

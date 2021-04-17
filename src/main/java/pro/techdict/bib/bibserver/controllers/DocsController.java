@@ -1,8 +1,10 @@
 package pro.techdict.bib.bibserver.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
+import pro.techdict.bib.bibserver.models.DocumentMetaModel;
 import pro.techdict.bib.bibserver.services.DocumentService;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/docs")
 public class DocsController {
@@ -25,6 +28,17 @@ public class DocsController {
   ) {
     this.cosService = cosService;
     this.documentService = documentService;
+  }
+
+  @GetMapping("/{docId}")
+  public HttpResponse getDocumentViewData(
+      @PathVariable Long docId
+  ) {
+    try {
+      return HttpResponse.success("获取文档信息成功！", documentService.getDocumentViewData(docId));
+    } catch (Exception e) {
+      return HttpResponse.fail("获取文档信息失败: " + e.getMessage());
+    }
   }
 
   @PostMapping("/uploadImages")
@@ -44,8 +58,20 @@ public class DocsController {
       @RequestBody Map<String, String> requestBody
   ) {
     Long userId = Long.parseLong(requestBody.get("userId"));
-    DocumentViewData viewData = documentService.initializeNewDocument(userId);
-    return HttpResponse.success("新建文档成功！", viewData);
+    try {
+      DocumentViewData viewData = documentService.initializeNewDocument(userId);
+      return HttpResponse.success("新建文档成功！", viewData);
+    } catch (Exception e) {
+      return HttpResponse.fail("新建文档失败: " + e.getMessage());
+    }
+  }
+
+  @PutMapping("/meta")
+  public HttpResponse updateMeta(
+      @RequestBody DocumentMetaModel meta
+  ) {
+    DocumentViewData newViewData = documentService.setDocumentMeta(meta);
+    return HttpResponse.success("更新文档信息成功", newViewData);
   }
 
 }

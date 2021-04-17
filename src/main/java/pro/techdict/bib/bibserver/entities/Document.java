@@ -16,6 +16,7 @@ public class Document extends BaseEntity<Long> {
   String title;
   String contentAbstract;
 
+  @Column(nullable = false)
   Boolean publicSharing = false; // 是否能分享为公开阅读
 
   @ManyToOne
