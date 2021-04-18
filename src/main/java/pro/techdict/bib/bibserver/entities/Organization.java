@@ -2,7 +2,7 @@ package pro.techdict.bib.bibserver.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import pro.techdict.bib.bibserver.beans.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.ORGANIZATION_SCOPE;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,7 +17,7 @@ public class Organization extends BaseEntity<Long> {
   String name;
 
   String description;
-  OrganizationScope scope;
+  ORGANIZATION_SCOPE scope;
   String avatarURL;
 
   int entityStatus = 0;

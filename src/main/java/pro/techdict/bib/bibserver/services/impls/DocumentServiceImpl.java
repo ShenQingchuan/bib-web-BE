@@ -2,11 +2,14 @@ package pro.techdict.bib.bibserver.services.impls;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPE;
 import pro.techdict.bib.bibserver.daos.DocumentRepository;
+import pro.techdict.bib.bibserver.daos.UserActivityRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.entities.Document;
 import pro.techdict.bib.bibserver.entities.UserAccount;
+import pro.techdict.bib.bibserver.entities.UserActivity;
 import pro.techdict.bib.bibserver.models.DocumentMetaModel;
 import pro.techdict.bib.bibserver.services.DocumentService;
 
@@ -18,13 +21,16 @@ public class DocumentServiceImpl implements DocumentService {
 
   final UserRepository userRepository;
   final DocumentRepository documentRepository;
+  final UserActivityRepository userActivityRepository;
 
   public DocumentServiceImpl(
       UserRepository userRepository,
-      DocumentRepository documentRepository
+      DocumentRepository documentRepository,
+      UserActivityRepository userActivityRepository
   ) {
     this.userRepository = userRepository;
     this.documentRepository = documentRepository;
+    this.userActivityRepository = userActivityRepository;
   }
 
   @Override
@@ -33,7 +39,15 @@ public class DocumentServiceImpl implements DocumentService {
     if (creator.isPresent()) {
       Document newDocument = new Document();
       newDocument.setCreator(creator.get());
-      return new DocumentViewData().fromEntity(documentRepository.save(newDocument));
+      Document savedDoc = documentRepository.save(newDocument);
+
+      // 给用户添加一条创建文档的动态信息
+      UserActivity createDocActivity = new UserActivity();
+      createDocActivity.setActivityType(USER_ACTIVITY_TYPE.CREATE_DOC);
+      createDocActivity.setCreatedDoc(savedDoc);
+      userActivityRepository.save(createDocActivity);
+
+      return new DocumentViewData().fromEntity(savedDoc);
     }
 
     return null;

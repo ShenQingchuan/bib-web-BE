@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pro.techdict.bib.bibserver.entities.Organization;
-import pro.techdict.bib.bibserver.beans.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.ORGANIZATION_SCOPE;
 import pro.techdict.bib.bibserver.services.OrganizationService;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 
@@ -28,9 +28,9 @@ public class OrganizationController {
     String avatarURL = requestBody.get("avatarURL");
     Long creatorUid = Long.parseLong(requestBody.get("creatorUid"));
     int scopeVal = Integer.parseInt(requestBody.get("scope"));
-    OrganizationScope scope = OrganizationScope.PRIVATE;
+    ORGANIZATION_SCOPE scope = ORGANIZATION_SCOPE.PRIVATE;
     if (scopeVal > 0) {
-      scope = OrganizationScope.PUBLIC;
+      scope = ORGANIZATION_SCOPE.PUBLIC;
     }
 
     Organization newOrganization =

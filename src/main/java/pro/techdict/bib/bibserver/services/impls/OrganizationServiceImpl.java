@@ -7,7 +7,7 @@ import pro.techdict.bib.bibserver.entities.Organization;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
-import pro.techdict.bib.bibserver.beans.OrganizationScope;
+import pro.techdict.bib.bibserver.beans.ORGANIZATION_SCOPE;
 import pro.techdict.bib.bibserver.services.OrganizationService;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class OrganizationServiceImpl implements OrganizationService {
   public Organization createNewOrganization(
       String name,
       String desc,
-      OrganizationScope scope,
+      ORGANIZATION_SCOPE scope,
       String avatarURL,
       Long creatorUid
   ) {

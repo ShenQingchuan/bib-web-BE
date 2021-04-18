@@ -1,5 +1,6 @@
 package pro.techdict.bib.bibserver.daos;
 
+import org.springframework.stereotype.Repository;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 
 import java.util.Optional;

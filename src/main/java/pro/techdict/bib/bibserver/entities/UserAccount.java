@@ -83,4 +83,9 @@ public class UserAccount extends BaseEntity<Long> {
   @JsonIgnoreProperties({"creator"})
   List<DocumentComment> likedComments; // 多用户对多点赞评论
 
+  // ———————— 用户 & 评论
+  @OneToMany(mappedBy = "creator")
+  @JsonIgnoreProperties({"creator"})
+  List<UserActivity> activities; // 一用户对多动态
+
 }
