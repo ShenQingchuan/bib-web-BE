@@ -43,7 +43,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     String userName;
     String password;
     int formType;
-    boolean isRememberMe;
+    boolean rememberMe;
   }
 
   @SneakyThrows
@@ -70,7 +70,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // 实现中以 `JWTUserDetails` 继承
     JWTUserDetails jwtUserDetails = (JWTUserDetails) authResult.getPrincipal();
     UserNameLoginFormModel form = new ObjectMapper().readValue(requestInputStreamBytes, UserNameLoginFormModel.class);
-    String token = JWTUtils.makeJsonWebToken(jwtUserDetails, form.isRememberMe, jwtProperties);
+    String token = JWTUtils.makeJsonWebToken(jwtUserDetails, form.rememberMe, jwtProperties);
     // 按规定格式返回创建成功的 token
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");

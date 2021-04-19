@@ -1,11 +1,16 @@
 package pro.techdict.bib.bibserver.services.impls;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPE;
+import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
 import pro.techdict.bib.bibserver.daos.DocumentRepository;
 import pro.techdict.bib.bibserver.daos.UserActivityRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
+import pro.techdict.bib.bibserver.dtos.DocShowInListDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.entities.Document;
 import pro.techdict.bib.bibserver.entities.UserAccount;
@@ -43,11 +48,11 @@ public class DocumentServiceImpl implements DocumentService {
 
       // 给用户添加一条创建文档的动态信息
       UserActivity createDocActivity = new UserActivity();
-      createDocActivity.setActivityType(USER_ACTIVITY_TYPE.CREATE_DOC);
+      createDocActivity.setActivityType(USER_ACTIVITY_TYPES.CREATE_DOC);
       createDocActivity.setCreatedDoc(savedDoc);
       userActivityRepository.save(createDocActivity);
 
-      return new DocumentViewData().fromEntity(savedDoc);
+      return DocumentViewData.fromEntity(savedDoc);
     }
 
     return null;
@@ -56,7 +61,7 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public DocumentViewData getDocumentViewData(Long docId) {
     Optional<Document> doc = documentRepository.findById(docId);
-    return doc.map(document -> new DocumentViewData().fromEntity(document)).orElse(null);
+    return doc.map(DocumentViewData::fromEntity).orElse(null);
   }
 
   @Override
@@ -66,10 +71,21 @@ public class DocumentServiceImpl implements DocumentService {
       updatingDoc.get().setTitle(metaModel.getTitle());
       updatingDoc.get().setContentAbstract(metaModel.getContentAbstract());
       updatingDoc.get().setPublicSharing(metaModel.getPublicSharing());
-      return new DocumentViewData().fromEntity(documentRepository.save(updatingDoc.get()));
+      return DocumentViewData.fromEntity(documentRepository.save(updatingDoc.get()));
     }
 
     return null;
+  }
+
+  public DocShowInListDto getDocumentList(Long userId, int pageNum) {
+    Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
+    Page<Document> documentsByPage = documentRepository.fetchByCreatorId(userId, pageable);
+
+    return DocShowInListDto.fromEntities(
+        documentsByPage.getContent(),
+        documentsByPage.getTotalPages()
+    );
+
   }
 
 }

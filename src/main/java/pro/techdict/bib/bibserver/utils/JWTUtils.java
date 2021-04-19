@@ -12,7 +12,7 @@ public class JWTUtils {
     // 生成token
     public static String makeJsonWebToken(JWTUserDetails userDetails, boolean isRememberMe, JWTProperties jwtProperties) {
         Date now = new Date(System.currentTimeMillis());
-        Date expires = new Date(now.getTime() + (isRememberMe ? jwtProperties.getExpires() : jwtProperties.getRemember()));
+        Date expires = new Date(now.getTime() + (isRememberMe ? jwtProperties.getRemember() : jwtProperties.getExpires()));
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .setSubject(userDetails.getUsername())

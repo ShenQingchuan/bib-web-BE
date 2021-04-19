@@ -28,4 +28,7 @@ public class Wiki extends BaseEntity<Long> {
   @JsonIgnoreProperties({"createdWikis", "focusingWikis"})
   List<UserAccount> followers; // 多知识库对多用户（关注者）
 
+  @OneToOne
+  Organization organization;
+
 }

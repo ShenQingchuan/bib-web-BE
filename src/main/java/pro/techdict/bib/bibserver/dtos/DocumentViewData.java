@@ -23,38 +23,33 @@ public class DocumentViewData {
   WikiSimpleDto inWiki;
   Boolean publicSharing;
 
-  public DocumentViewData fromEntity(Document docEntity) {
+  public static DocumentViewData fromEntity(Document docEntity) {
     if (docEntity == null) return null;
 
-    this.id = docEntity.getId();
-    this.title = Objects.requireNonNullElse(docEntity.getTitle(), "");
-    this.contentAbstract = Objects.requireNonNullElse(docEntity.getContentAbstract(), "");
-    this.creator = new UserSimpleDto().fromEntity(docEntity.getCreator());
+    DocumentViewData viewData = new DocumentViewData();
+    viewData.id = docEntity.getId();
+    viewData.title = Objects.requireNonNullElse(docEntity.getTitle(), "");
+    viewData.contentAbstract = Objects.requireNonNullElse(docEntity.getContentAbstract(), "");
+    viewData.creator = UserSimpleDto.fromEntity(docEntity.getCreator());
 
-    this.thumbUpUsers = Objects.requireNonNullElse(
+    viewData.thumbUpUsers = Objects.requireNonNullElse(
         docEntity.getThumbUpUsers(),
         new ArrayList<UserAccount>()
-    ).stream().map(
-        thumbsUpUser -> new UserSimpleDto().fromEntity(thumbsUpUser)
-    ).collect(Collectors.toList());
+    ).stream().map(UserSimpleDto::fromEntity).collect(Collectors.toList());
 
-    this.collaborators = Objects.requireNonNullElse(
+    viewData.collaborators = Objects.requireNonNullElse(
         docEntity.getCollaborators(),
         new ArrayList<UserAccount>()
-    ).stream().map(
-        collaborator -> new UserSimpleDto().fromEntity(collaborator)
-    ).collect(Collectors.toList());
+    ).stream().map(UserSimpleDto::fromEntity).collect(Collectors.toList());
 
-    this.comments = Objects.requireNonNullElse(
+    viewData.comments = Objects.requireNonNullElse(
         docEntity.getComments(),
         new ArrayList<DocumentComment>()
-    ).stream().map(
-        comment -> new DocumentCommentDto().fromEntity(comment)
-    ).collect(Collectors.toList());
+    ).stream().map(DocumentCommentDto::fromEntity).collect(Collectors.toList());
 
-    this.inWiki = new WikiSimpleDto().fromEntity(docEntity.getInWiki());
-    this.publicSharing = docEntity.getPublicSharing();
+    viewData.inWiki = WikiSimpleDto.fromEntity(docEntity.getInWiki());
+    viewData.publicSharing = docEntity.getPublicSharing();
 
-    return this;
+    return viewData;
   }
 }

@@ -26,10 +26,10 @@ public class UserActivityServiceImpl implements UserActivityService {
   @Override
   public UserActivitiesOnePageDto getUserActivities(String userName, int pageNum) {
     Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
-    Page<UserActivity> pageableActivities = userActivityRepository.getPageableActivities(userName, pageable);
+    Page<UserActivity> pageableActivities = userActivityRepository.fetchPageableActivities(userName, pageable);
 
     List<UserActivityDto> activities = pageableActivities.getContent().stream().map(
-        activity -> new UserActivityDto().fromEntity(activity)
+        UserActivityDto::fromEntity
     ).collect(Collectors.toList());
     var onePageDto = new UserActivitiesOnePageDto();
     onePageDto.setActivities(activities);

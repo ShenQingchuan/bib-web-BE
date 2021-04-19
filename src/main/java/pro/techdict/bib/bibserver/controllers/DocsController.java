@@ -30,6 +30,17 @@ public class DocsController {
     this.documentService = documentService;
   }
 
+  @GetMapping("/myList")
+  public HttpResponse getMyDocumentList(
+      @RequestParam Long userId,
+      @RequestParam int pageNum
+  ) {
+    return HttpResponse.success(
+        "获取我的文档列表成功！",
+        documentService.getDocumentList(userId, pageNum)
+    );
+  }
+
   @GetMapping("/{docId}")
   public HttpResponse getDocumentViewData(
       @PathVariable Long docId

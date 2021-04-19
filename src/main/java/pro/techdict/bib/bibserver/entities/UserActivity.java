@@ -1,14 +1,11 @@
 package pro.techdict.bib.bibserver.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.relational.core.mapping.Table;
-import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPE;
+import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Table
 @Entity
@@ -17,21 +14,25 @@ import javax.persistence.OneToOne;
 public class UserActivity extends BaseEntity<Long> {
 
   @Column(nullable = false)
-  USER_ACTIVITY_TYPE activityType;
+  USER_ACTIVITY_TYPES activityType;
 
   @ManyToOne
   UserAccount creator;
 
   @OneToOne
+  @JsonIgnoreProperties({"creator"})
   Document thumbsUpedDoc;
 
   @OneToOne
+  @JsonIgnoreProperties({"activities"})
   UserAccount focusedUser;
 
   @OneToOne
+  @JsonIgnoreProperties({"creator"})
   Wiki focusedWiki;
 
   @OneToOne
+  @JsonIgnoreProperties({"creator"})
   Document createdDoc;
 
 }
