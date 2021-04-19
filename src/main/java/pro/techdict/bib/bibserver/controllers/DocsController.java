@@ -64,7 +64,7 @@ public class DocsController {
     return HttpResponse.success("上传图片成功！", data);
   }
 
-  @PostMapping("/new")
+  @PostMapping("/")
   public HttpResponse newDoc(
       @RequestBody Map<String, String> requestBody
   ) {

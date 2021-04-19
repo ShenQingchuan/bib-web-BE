@@ -9,6 +9,7 @@ import pro.techdict.bib.bibserver.entities.Wiki;
 public class WikiSimpleDto {
   Long id;
   String name;
+  String description;
   Boolean isPrivate;
 
   public static WikiSimpleDto fromEntity(Wiki wikiEntity) {
@@ -17,6 +18,7 @@ public class WikiSimpleDto {
     return new WikiSimpleDto(
         wikiEntity.getId(),
         wikiEntity.getName(),
+        wikiEntity.getDescription(),
         wikiEntity.getIsPrivate()
     );
   }
