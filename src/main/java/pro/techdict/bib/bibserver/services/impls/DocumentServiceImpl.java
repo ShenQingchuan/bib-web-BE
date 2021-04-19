@@ -50,6 +50,7 @@ public class DocumentServiceImpl implements DocumentService {
       UserActivity createDocActivity = new UserActivity();
       createDocActivity.setActivityType(USER_ACTIVITY_TYPES.CREATE_DOC);
       createDocActivity.setCreatedDoc(savedDoc);
+      createDocActivity.setCreator(creator.get());
       userActivityRepository.save(createDocActivity);
 
       return DocumentViewData.fromEntity(savedDoc);
