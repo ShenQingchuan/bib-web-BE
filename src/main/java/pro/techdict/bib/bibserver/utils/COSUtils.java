@@ -11,7 +11,11 @@ public class COSUtils {
    * @param userId    上传用户唯一标识
    * @param file      文件
    */
-  public static String getKey(String directory, long userId, MultipartFile file) {
-    return directory + "uid-" + userId + "/" + new Date().getTime() + "__" + file.getOriginalFilename();
+  public static String getPrefixWithUserId(String directory, long userId) {
+    return directory + "uid-" + userId + "/" + new Date().getTime();
+  }
+
+  public static String getKeyWithPrefix(String keyPrefix, MultipartFile file) {
+    return keyPrefix + "__" + file.getOriginalFilename();
   }
 }

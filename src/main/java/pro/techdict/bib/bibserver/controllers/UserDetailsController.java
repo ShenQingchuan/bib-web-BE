@@ -6,6 +6,7 @@ import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.services.UserService;
 import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
+import pro.techdict.bib.bibserver.utils.COSUtils;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
 public class UserDetailsController {
 
   final UserService userService;
-  private final TencentCOSService cosService;
+  final TencentCOSService cosService;
 
   public UserDetailsController(
       UserService userService,
@@ -55,7 +56,9 @@ public class UserDetailsController {
       @RequestParam("uploadImages") MultipartFile[] uploadFiles
   ) {
     List<COSUploadResultWithKey> uploadResults =
-        cosService.uploadObjects("bibweb/user-avatars/", Long.parseLong(userId), uploadFiles);
+        cosService.uploadObjects(COSUtils.getPrefixWithUserId(
+            "bibweb/user-avatars/", Long.parseLong(userId)
+        ), uploadFiles);
     Map<String, Object> data = new HashMap<>();
     data.put("newAvatar", uploadResults);
 

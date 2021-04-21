@@ -1,41 +1,56 @@
 package pro.techdict.bib.bibserver.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.entities.Organization;
-import pro.techdict.bib.bibserver.beans.ORGANIZATION_SCOPE;
+import pro.techdict.bib.bibserver.models.CreateOrgFormModel;
 import pro.techdict.bib.bibserver.services.OrganizationService;
+import pro.techdict.bib.bibserver.services.TencentCOSService;
+import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
+import pro.techdict.bib.bibserver.utils.COSUtils;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/org")
 public class OrganizationController {
 
   final OrganizationService organizationService;
+  final TencentCOSService cosService;
 
-  public OrganizationController(OrganizationService organizationService) {
+  public OrganizationController(
+      OrganizationService organizationService,
+      TencentCOSService cosService
+  ) {
     this.organizationService = organizationService;
+    this.cosService = cosService;
   }
 
   @PostMapping("/")
-  public HttpResponse createNewOrganization(@RequestBody Map<String, String> requestBody) {
-    String name = requestBody.get("name");
-    String desc = requestBody.get("desc");
-    String avatarURL = requestBody.get("avatarURL");
-    Long creatorUid = Long.parseLong(requestBody.get("creatorUid"));
-    int scopeVal = Integer.parseInt(requestBody.get("scope"));
-    ORGANIZATION_SCOPE scope = ORGANIZATION_SCOPE.PRIVATE;
-    if (scopeVal > 0) {
-      scope = ORGANIZATION_SCOPE.PUBLIC;
-    }
-
+  public HttpResponse createNewOrganization(@RequestBody CreateOrgFormModel requestBody) {
     Organization newOrganization =
-        organizationService.createNewOrganization(name, desc, scope, avatarURL, creatorUid);
-    return HttpResponse.success("创建团队成功！", newOrganization);
+        organizationService.createNewOrganization(
+            requestBody.getName(),
+            requestBody.getDesc(),
+            requestBody.getAvatarURL(),
+            requestBody.getCreatorUid()
+        );
+    return HttpResponse.success("创建团队成功！", OrgSimpleDto.fromEntity(newOrganization));
+  }
+
+  @PostMapping("/uploadAvatar")
+  public HttpResponse uploadOrganizationAvatar(
+      @RequestParam("userId") Long creatorId,
+      @RequestParam("avatarFile") MultipartFile[] uploadFiles
+  ) {
+    List<COSUploadResultWithKey> uploadResults =
+        cosService.uploadObjects(COSUtils.getPrefixWithUserId(
+            "bibweb/org-avatars/initializing/", creatorId),
+            uploadFiles
+        );
+    return HttpResponse.success("上传团队头像成功！", uploadResults);
   }
 
 }

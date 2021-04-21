@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TencentCOSService {
 
-  List<COSUploadResultWithKey> uploadObjects(String directory, long userId, MultipartFile[] files);
+  List<COSUploadResultWithKey> uploadObjects(String keyPrefix, MultipartFile[] files);
 
 }

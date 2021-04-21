@@ -8,6 +8,7 @@ import pro.techdict.bib.bibserver.models.DocumentMetaModel;
 import pro.techdict.bib.bibserver.services.DocumentService;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
+import pro.techdict.bib.bibserver.utils.COSUtils;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 
 import java.util.HashMap;
@@ -58,7 +59,10 @@ public class DocsController {
       @RequestParam("uploadImages") MultipartFile[] uploadFiles
   ) {
     List<COSUploadResultWithKey> uploadResults =
-        cosService.uploadObjects("bibweb/docs-images/", Long.parseLong(userId), uploadFiles);
+        cosService.uploadObjects(
+            COSUtils.getPrefixWithUserId("bibweb/docs-images/", Long.parseLong(userId)),
+            uploadFiles
+        );
     Map<String, Object> data = new HashMap<>();
     data.put("uploadResults", uploadResults);
     return HttpResponse.success("上传图片成功！", data);

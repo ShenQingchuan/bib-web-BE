@@ -33,6 +33,9 @@ public class UserActivityDto {
       case CREATE_WIKI:
         activityData = WikiSimpleDto.fromEntity(activityEntity.getCreatedWiki());
         break;
+      case CREATE_ORG:
+        activityData = OrgSimpleDto.fromEntity(activityEntity.getCreatedOrg());
+        break;
     }
 
     return new UserActivityDto(

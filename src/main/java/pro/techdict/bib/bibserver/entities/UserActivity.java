@@ -39,4 +39,8 @@ public class UserActivity extends BaseEntity<Long> {
   @JsonIgnoreProperties({"creator"})
   Wiki createdWiki;
 
+  @OneToOne
+  @JsonIgnoreProperties({"creator", "memberList"})
+  Organization createdOrg;
+
 }

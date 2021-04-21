@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"userDetails"})
 public class UserAccount extends BaseEntity<Long> {
 
   @Column(unique = true)

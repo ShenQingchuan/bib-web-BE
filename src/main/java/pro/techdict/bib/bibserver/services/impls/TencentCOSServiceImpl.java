@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
-import pro.techdict.bib.bibserver.utils.COSUtils;
 import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
+import pro.techdict.bib.bibserver.utils.COSUtils;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TencentCOSServiceImpl implements TencentCOSService {
+public class  TencentCOSServiceImpl implements TencentCOSService {
 
   private final TencentCloudProperties tencentCloudProperties;
 
@@ -34,7 +34,7 @@ public class TencentCOSServiceImpl implements TencentCOSService {
    * @param files     文件集合
    */
   @Override
-  public List<COSUploadResultWithKey> uploadObjects(String directory, long userId, MultipartFile[] files) {
+  public List<COSUploadResultWithKey> uploadObjects(String keyPrefix, MultipartFile[] files) {
     COSCredentials credentials = new BasicCOSCredentials(
         tencentCloudProperties.getSecretId(),
         tencentCloudProperties.getSecretKey()
@@ -48,7 +48,7 @@ public class TencentCOSServiceImpl implements TencentCOSService {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
-        String key = COSUtils.getKey(directory, userId, file);
+        String key = COSUtils.getKeyWithPrefix(keyPrefix, file);
 
         PutObjectRequest putObjectRequest = new PutObjectRequest(
             tencentCloudProperties.getCosBucket(),
