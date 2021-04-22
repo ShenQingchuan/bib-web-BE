@@ -70,7 +70,7 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public DocumentViewData getDocumentViewData(Long docId, Long userId) {
     Optional<Document> doc = documentRepository.findById(docId);
-    return doc.map(document -> DocumentViewData.fromEntity(document).setThumbsUpedById(docId)).orElse(null);
+    return doc.map(document -> DocumentViewData.fromEntity(document).setThumbsUpedByUserId(userId)).orElse(null);
   }
 
   @Override
@@ -88,7 +88,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   public DocShowInListDto getRecentRelativeDocumentList(Long userId, int pageNum) {
-    Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
+    Pageable pageable = PageRequest.of(pageNum, 10);
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
       var createdDocs = user.get().getCreatedDocs();
@@ -118,7 +118,7 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   public DocShowInListDto getThumbsUpedDocumentList(Long userId, int pageNum) {
-    Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
+    Pageable pageable = PageRequest.of(pageNum, 10);
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
       List<Document> likedDocs = user.get().getLikedDocs();

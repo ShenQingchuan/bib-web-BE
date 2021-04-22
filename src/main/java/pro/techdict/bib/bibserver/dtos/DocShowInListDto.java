@@ -23,6 +23,7 @@ public class DocShowInListDto {
     Long creatorId;
     String creatorName;
     Long createTime;
+    Long updateTime;
     ARCHIVE_TYPES archiveType;
     Boolean editable = false;
     Long wikiId;
@@ -37,6 +38,7 @@ public class DocShowInListDto {
       item.setCreatorId(documentEntity.getCreator().getId());
       item.setCreatorName(documentEntity.getCreator().getUserName());
       item.setCreateTime(documentEntity.getCreateTime().getTime());
+      item.setUpdateTime(documentEntity.getUpdateTime().getTime());
 
       List<UserAccount> collaborators = documentEntity.getCollaborators();
       collaborators.add(documentEntity.getCreator());

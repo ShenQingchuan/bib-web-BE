@@ -53,7 +53,7 @@ public class DocumentViewData {
     return viewData;
   }
 
-  public DocumentViewData setThumbsUpedById(Long userId) {
+  public DocumentViewData setThumbsUpedByUserId(Long userId) {
     this.setThumbsUped(this.thumbUpUsers.stream().anyMatch(user -> user.getUid().equals(userId)));
     return this;
   }
