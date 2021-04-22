@@ -51,6 +51,7 @@ public class DocumentServiceImpl implements DocumentService {
     if (creator.isPresent()) {
       Document newDocument = new Document();
       newDocument.setCreator(creator.get());
+      newDocument.setCollaborators(new ArrayList<>());
       Document savedDoc = documentRepository.save(newDocument);
 
       // 给用户添加一条创建文档的动态信息
@@ -106,6 +107,7 @@ public class DocumentServiceImpl implements DocumentService {
           allRelativeDocs.size()
       );
       return DocShowInListDto.fromEntities(
+          userId,
           documentsByPage.getContent(),
           documentsByPage.getTotalPages()
       );

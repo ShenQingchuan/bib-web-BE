@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pro.techdict.bib.bibserver.beans.ARCHIVE_TYPES;
 import pro.techdict.bib.bibserver.entities.Document;
+import pro.techdict.bib.bibserver.entities.UserAccount;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,18 +24,24 @@ public class DocShowInListDto {
     String creatorName;
     Long createTime;
     ARCHIVE_TYPES archiveType;
+    Boolean editable = false;
     Long wikiId;
     String wikiName;
     Long orgId;
     String orgName;
 
-    static ListItem fromEntity(Document documentEntity) {
+    static ListItem fromEntity(Document documentEntity, Long userId) {
       ListItem item = new ListItem();
       item.setId(documentEntity.getId());
       item.setTitle(documentEntity.getTitle());
       item.setCreatorId(documentEntity.getCreator().getId());
       item.setCreatorName(documentEntity.getCreator().getUserName());
       item.setCreateTime(documentEntity.getCreateTime().getTime());
+
+      List<UserAccount> collaborators = documentEntity.getCollaborators();
+      collaborators.add(documentEntity.getCreator());
+      item.setEditable(collaborators.stream().anyMatch(c -> c.getId().equals(userId)));
+
       if (documentEntity.getInWiki() != null) {
         item.setWikiId(documentEntity.getInWiki().getId());
         item.setWikiName(documentEntity.getInWiki().getName());
@@ -56,9 +63,9 @@ public class DocShowInListDto {
   List<ListItem> items;
   int pageTotal;
 
-  public static DocShowInListDto fromEntities(List<Document> docEntities, int pageTotal) {
+  public static DocShowInListDto fromEntities(Long userId, List<Document> docEntities, int pageTotal) {
     List<ListItem> listItems = docEntities.stream().map(
-        ListItem::fromEntity
+        doc -> ListItem.fromEntity(doc, userId)
     ).collect(Collectors.toList());
     return new DocShowInListDto(listItems, pageTotal);
   }
