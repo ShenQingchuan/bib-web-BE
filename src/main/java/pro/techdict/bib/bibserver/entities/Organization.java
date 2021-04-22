@@ -26,4 +26,7 @@ public class Organization extends BaseEntity<Long> {
   @ManyToMany
   List<UserAccount> memberList;
 
+  @OneToMany
+  List<Wiki> wikis;
+
 }

@@ -71,7 +71,7 @@ public class UserAccount extends BaseEntity<Long> {
 
   @ManyToMany(mappedBy = "followers")
   @JsonIgnoreProperties({"creator", "followers"})
-  List<Wiki> focusingWikis;
+  List<Wiki> focusingWikis;  // 多用户对多知识库（关注的）
 
   // ———————— 用户 & 评论
 

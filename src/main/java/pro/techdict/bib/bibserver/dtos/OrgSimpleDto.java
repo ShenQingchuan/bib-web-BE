@@ -19,6 +19,8 @@ public class OrgSimpleDto {
   // : 要在成员列表页面做分页查询
 
   public static OrgSimpleDto fromEntity(Organization orgEntity) {
+    if (orgEntity == null) return null;
+
     return new OrgSimpleDto(
         orgEntity.getId(),
         orgEntity.getName(),

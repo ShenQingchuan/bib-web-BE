@@ -1,9 +1,6 @@
 package pro.techdict.bib.bibserver.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pro.techdict.bib.bibserver.models.CreateWikiFormModel;
 import pro.techdict.bib.bibserver.services.WikiService;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
@@ -25,6 +22,17 @@ public class WikiController {
     return HttpResponse.success(
         "新建知识库成功！",
         wikiService.createNewWiki(formModel)
+    );
+  }
+
+  @GetMapping("/myAll")
+  public HttpResponse getAllMyRelativeWikis(
+    @RequestParam Long userId,
+    @RequestParam int pageNum
+  ) {
+    return HttpResponse.success(
+        "获取所有相关知识库成功！",
+        wikiService.getWikiDataShowList(userId, pageNum)
     );
   }
 

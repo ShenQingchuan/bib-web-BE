@@ -1,18 +1,29 @@
 package pro.techdict.bib.bibserver.services.impls;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
 import pro.techdict.bib.bibserver.daos.UserActivityRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.daos.WikiRepository;
+import pro.techdict.bib.bibserver.dtos.WikiListItemDataDto;
+import pro.techdict.bib.bibserver.dtos.WikiListOnePageData;
 import pro.techdict.bib.bibserver.dtos.WikiSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserActivity;
 import pro.techdict.bib.bibserver.entities.Wiki;
+import pro.techdict.bib.bibserver.exceptions.CustomException;
+import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.models.CreateWikiFormModel;
 import pro.techdict.bib.bibserver.services.WikiService;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WikiServiceImpl implements WikiService {
@@ -52,6 +63,35 @@ public class WikiServiceImpl implements WikiService {
     }
 
     return null;
+  }
+
+  @Override
+  public WikiListOnePageData getWikiDataShowList(Long userId, int pageNum) {
+    Optional<UserAccount> user = userRepository.findById(userId);
+    if (user.isPresent()) {
+      HashSet<Wiki> allRelativeWikisSet = new HashSet<>(
+          user.get().getCreatedWikis()
+      );
+      user.get().getJoinedOrgs().forEach(
+          org -> {
+            allRelativeWikisSet.addAll(org.getWikis()); // 所有加入了的团队的团队 Wiki
+          }
+      );
+      Pageable pageable = PageRequest.of(pageNum, 10);
+      Page<Wiki> wikiByPage = new PageImpl<>(
+          new ArrayList<>(allRelativeWikisSet),
+          pageable,
+          allRelativeWikisSet.size()
+      );
+      return new WikiListOnePageData(
+          wikiByPage.getContent().stream().map(
+              WikiListItemDataDto::fromEntity
+          ).collect(Collectors.toList()),
+          wikiByPage.getTotalPages()
+      );
+    } else {
+      throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+    }
   }
 
 }
