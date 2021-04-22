@@ -11,19 +11,20 @@ import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.daos.UserDetailsRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
-import pro.techdict.bib.bibserver.entities.Organization;
+import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
-import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -121,9 +122,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public List<Organization> getJoinedOrgsByName(String userName) {
+  public List<OrgSimpleDto> getJoinedOrgsByName(String userName) {
     Optional<UserAccount> user = userRepository.findByUserName(userName);
-    return user.map(UserAccount::getJoinedOrgs).orElse(null);
+    return user.map(userAccount -> userAccount.getJoinedOrgs().stream()
+        .map(OrgSimpleDto::fromEntity)
+        .collect(Collectors.toList())).orElse(null);
   }
 
   @Override

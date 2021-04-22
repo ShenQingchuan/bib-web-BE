@@ -6,6 +6,7 @@ public enum CustomExceptionType {
     USER_NOT_FOUND_ERROR(400, "该用户不存在！"),
     TOKEN_EXPIRED_ERROR(401, "您的令牌已经过期，请重新登录！"),
     UNAUTHORIZED_ERROR(401, "您还没有登录，无法访问该接口！"),
+    DOCUMENT_NOT_FOUND(6404, "该文档不存在！"),
     VERIFY_CODE_NOT_EXISTS(9404, "该验证码不存在！"),
     PASSWORD_RETRIEVE_EMAIL_NOTFOUND(404, "您要找回密码的邮箱地址未曾在本站注册！"),
     FORBIDDEN_ERROR(403, "您没有足够的权限进行该操作！"),

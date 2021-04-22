@@ -13,6 +13,8 @@ public class UserSimpleDto {
   int followersCount;
 
   public static UserSimpleDto fromEntity(UserAccount userEntity) {
+    if (userEntity == null) return null;
+
     return new UserSimpleDto(
         userEntity.getId(),
         userEntity.getUserName(),

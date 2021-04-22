@@ -3,7 +3,9 @@ package pro.techdict.bib.bibserver.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
+import pro.techdict.bib.bibserver.models.CommentModel;
 import pro.techdict.bib.bibserver.models.DocumentMetaModel;
 import pro.techdict.bib.bibserver.services.DocumentService;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
@@ -44,10 +46,11 @@ public class DocsController {
 
   @GetMapping("/{docId}")
   public HttpResponse getDocumentViewData(
-      @PathVariable Long docId
+      @PathVariable Long docId,
+      @RequestParam Long userId
   ) {
     try {
-      return HttpResponse.success("获取文档信息成功！", documentService.getDocumentViewData(docId));
+      return HttpResponse.success("获取文档信息成功！", documentService.getDocumentViewData(docId, userId));
     } catch (Exception e) {
       return HttpResponse.fail("获取文档信息失败: " + e.getMessage());
     }
@@ -87,6 +90,28 @@ public class DocsController {
   ) {
     DocumentViewData newViewData = documentService.setDocumentMeta(meta);
     return HttpResponse.success("更新文档信息成功", newViewData);
+  }
+
+  @PutMapping("/thumbsUp")
+  public HttpResponse thumbsUpDocument(
+      @RequestBody Map<String, Long> requestBody
+  ) {
+    Long docId = requestBody.get("docId");
+    Long userId = requestBody.get("userId");
+
+    return documentService.thumbsUpDocument(userId, docId)
+        ? HttpResponse.success()
+        : HttpResponse.fail("点赞文档请求失败");
+  }
+
+  @PostMapping("/comment")
+  public HttpResponse commentToDocument(
+      @RequestBody CommentModel requestBody
+  ) {
+    DocumentCommentDto documentCommentDto = documentService.addCommentToDocument(requestBody);
+    return documentCommentDto != null
+        ? HttpResponse.success("评论文档成功！", documentCommentDto)
+        : HttpResponse.fail("评论文档失败");
   }
 
 }

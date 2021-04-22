@@ -1,9 +1,9 @@
 package pro.techdict.bib.bibserver.services;
 
-import pro.techdict.bib.bibserver.entities.Organization;
+import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
+import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
-import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ public interface UserService {
   void sendSmsVerifyCode(String phone);
 
   // 获取加入的团队
-  List<Organization> getJoinedOrgsByName(String userName);
+  List<OrgSimpleDto> getJoinedOrgsByName(String userName);
 
   // 关注其他用户
   boolean followUser(Long srcUid, Long targetUid);

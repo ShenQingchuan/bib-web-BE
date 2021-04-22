@@ -29,7 +29,7 @@ public class DocumentComment extends BaseEntity<Long> {
   List<UserAccount> thumbUpUsers;
 
   @OneToOne
-  @JsonIgnoreProperties({"phone", "email", "role", "introduce", "address", "profession"})
-  UserAccount replyTo;
+  @JsonIgnoreProperties({"replyTo"})
+  DocumentComment replyTo;
 
 }

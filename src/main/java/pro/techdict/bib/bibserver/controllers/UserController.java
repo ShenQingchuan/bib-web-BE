@@ -1,11 +1,11 @@
 package pro.techdict.bib.bibserver.controllers;
 
 import org.springframework.web.bind.annotation.*;
-import pro.techdict.bib.bibserver.entities.Organization;
+import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
+import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
-import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.services.PasswordRetrieveService;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
@@ -106,7 +106,7 @@ public class UserController {
   public HttpResponse getUsersJoinedOrgs(
       @RequestParam("userName") String userName
   ) {
-    List<Organization> joinedOrgs = userService.getJoinedOrgsByName(userName);
+    List<OrgSimpleDto> joinedOrgs = userService.getJoinedOrgsByName(userName);
     if (joinedOrgs != null) {
       return HttpResponse.success("获取用户所在团队成功！", joinedOrgs);
     } else return HttpResponse.fail("未找到该用户所在团队信息！");
