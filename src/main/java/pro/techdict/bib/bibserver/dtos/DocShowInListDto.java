@@ -70,5 +70,4 @@ public class DocShowInListDto {
     return new DocShowInListDto(listItems, pageTotal);
   }
 
-
 }

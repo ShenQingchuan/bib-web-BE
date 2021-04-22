@@ -86,12 +86,12 @@ public class DocumentServiceImpl implements DocumentService {
     return null;
   }
 
-  public DocShowInListDto getDocumentList(Long userId, int pageNum) {
+  @Override
+  public DocShowInListDto getRecentRelativeDocumentList(Long userId, int pageNum) {
     Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
       var createdDocs = user.get().getCreatedDocs();
-      var likedDocs = user.get().getLikedDocs();
       var collaborateDocs = user.get().getCollaborateDocs();
       var commentedDocs = user.get().getCreatedComments().stream().map(
           DocumentComment::getTarget
@@ -105,6 +105,27 @@ public class DocumentServiceImpl implements DocumentService {
           new ArrayList<>(allRelativeDocs),
           pageable,
           allRelativeDocs.size()
+      );
+      return DocShowInListDto.fromEntities(
+          userId,
+          documentsByPage.getContent(),
+          documentsByPage.getTotalPages()
+      );
+    }
+
+    return null;
+  }
+
+  @Override
+  public DocShowInListDto getThumbsUpedDocumentList(Long userId, int pageNum) {
+    Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
+    Optional<UserAccount> user = userRepository.findById(userId);
+    if (user.isPresent()) {
+      List<Document> likedDocs = user.get().getLikedDocs();
+      Page<Document> documentsByPage = new PageImpl<>(
+          likedDocs,
+          pageable,
+          likedDocs.size()
       );
       return DocShowInListDto.fromEntities(
           userId,

@@ -3,6 +3,7 @@ package pro.techdict.bib.bibserver.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pro.techdict.bib.bibserver.dtos.DocShowInListDto;
 import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.models.CommentModel;
@@ -40,7 +41,7 @@ public class DocsController {
   ) {
     return HttpResponse.success(
         "获取我的文档列表成功！",
-        documentService.getDocumentList(userId, pageNum)
+        documentService.getRecentRelativeDocumentList(userId, pageNum)
     );
   }
 
@@ -54,6 +55,15 @@ public class DocsController {
     } catch (Exception e) {
       return HttpResponse.fail("获取文档信息失败: " + e.getMessage());
     }
+  }
+
+  @GetMapping("/thumbsUpedList")
+  public HttpResponse getThumbsUpedDocs(
+      @RequestParam Long userId,
+      @RequestParam int pageNum
+  ) {
+    DocShowInListDto thumbsUpedDocumentList = documentService.getThumbsUpedDocumentList(userId, pageNum);
+    return HttpResponse.success("获取点赞过的文档列表成功！", thumbsUpedDocumentList);
   }
 
   @PostMapping("/uploadImages")

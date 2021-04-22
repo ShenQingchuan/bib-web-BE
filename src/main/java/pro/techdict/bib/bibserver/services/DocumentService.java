@@ -14,9 +14,12 @@ public interface DocumentService {
 
   DocumentViewData setDocumentMeta(DocumentMetaModel metaModel);
 
-  DocShowInListDto getDocumentList(Long userId, int pageNum);
+  DocShowInListDto getRecentRelativeDocumentList(Long userId, int pageNum);
+
+  DocShowInListDto getThumbsUpedDocumentList(Long userId, int pageNum);
 
   Boolean thumbsUpDocument(Long userId, Long docId);
 
   DocumentCommentDto addCommentToDocument(CommentModel commentModel);
+
 }
