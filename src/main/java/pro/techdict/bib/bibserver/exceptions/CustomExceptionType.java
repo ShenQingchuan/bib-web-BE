@@ -4,6 +4,8 @@ public enum CustomExceptionType {
     USER_SIDE_ERROR(400, "您的操作有误，客户端运行异常！"),
     AUTHENTICATE_FAILED_ERROR(400, "登录验证执行失败！"),
     USER_NOT_FOUND_ERROR(400, "该用户不存在！"),
+    WIKI_NOT_FOUND_ERROR(400, "该知识库不存在！"),
+    ORG_NOT_FOUND_ERROR(400, "该团队不存在！"),
     TOKEN_EXPIRED_ERROR(401, "您的令牌已经过期，请重新登录！"),
     UNAUTHORIZED_ERROR(401, "您还没有登录，无法访问该接口！"),
     DOCUMENT_NOT_FOUND(6404, "该文档不存在！"),

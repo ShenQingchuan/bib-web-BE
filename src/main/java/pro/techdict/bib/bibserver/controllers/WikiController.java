@@ -32,7 +32,17 @@ public class WikiController {
   ) {
     return HttpResponse.success(
         "获取所有相关知识库成功！",
-        wikiService.getWikiDataShowList(userId, pageNum)
+        wikiService.getWikiShowList(userId, pageNum)
+    );
+  }
+
+  @GetMapping("/allDocs")
+  public HttpResponse getWikiAllDocuments(
+      @RequestParam Long wikiId,
+      @RequestParam int pageNum
+  ) {
+    return HttpResponse.success("获取知识库文档列表成功！",
+      wikiService.getWikiAllDocsByPage(wikiId, pageNum)
     );
   }
 

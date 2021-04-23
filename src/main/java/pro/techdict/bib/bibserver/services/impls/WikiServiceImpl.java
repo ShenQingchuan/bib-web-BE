@@ -1,17 +1,13 @@
 package pro.techdict.bib.bibserver.services.impls;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
 import pro.techdict.bib.bibserver.daos.UserActivityRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.daos.WikiRepository;
-import pro.techdict.bib.bibserver.dtos.WikiListItemDataDto;
-import pro.techdict.bib.bibserver.dtos.WikiListOnePageData;
-import pro.techdict.bib.bibserver.dtos.WikiSimpleDto;
+import pro.techdict.bib.bibserver.dtos.*;
+import pro.techdict.bib.bibserver.entities.Document;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserActivity;
 import pro.techdict.bib.bibserver.entities.Wiki;
@@ -66,7 +62,7 @@ public class WikiServiceImpl implements WikiService {
   }
 
   @Override
-  public WikiListOnePageData getWikiDataShowList(Long userId, int pageNum) {
+  public WikiListOnePageData getWikiShowList(Long userId, int pageNum) {
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
       HashSet<Wiki> allRelativeWikisSet = new HashSet<>(
@@ -92,6 +88,18 @@ public class WikiServiceImpl implements WikiService {
     } else {
       throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
     }
+  }
+
+  @Override
+  public DocShowInWikiOnePageDto getWikiAllDocsByPage(Long wikiId, int pageNum) {
+    Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "updateTime");
+    Page<Document> documentsByPage = wikiRepository.fetchDocumentsById(wikiId, pageable);
+    return new DocShowInWikiOnePageDto(
+        documentsByPage.getContent().stream().map(
+            DocShowInWikiListDto::fromEntity
+        ).collect(Collectors.toList()),
+        documentsByPage.getTotalPages()
+    );
   }
 
 }
