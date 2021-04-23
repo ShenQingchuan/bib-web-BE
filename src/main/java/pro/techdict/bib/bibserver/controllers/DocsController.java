@@ -8,6 +8,7 @@ import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.models.CommentModel;
 import pro.techdict.bib.bibserver.models.DocumentMetaModel;
+import pro.techdict.bib.bibserver.models.NewDocRequestModel;
 import pro.techdict.bib.bibserver.services.DocumentService;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.utils.COSUploadResultWithKey;
@@ -45,6 +46,20 @@ public class DocsController {
     );
   }
 
+  @PostMapping("/")
+  public HttpResponse newDoc(
+      @RequestBody NewDocRequestModel requestBody
+  ) {
+    Long userId = requestBody.getUserId();
+    Long wikiId = requestBody.getWikiId();
+    try {
+      DocumentViewData viewData = documentService.initializeNewDocument(userId, wikiId);
+      return HttpResponse.success("新建文档成功！", viewData);
+    } catch (Exception e) {
+      return HttpResponse.fail("新建文档失败: " + e.getMessage());
+    }
+  }
+
   @GetMapping("/{docId}")
   public HttpResponse getDocumentViewData(
       @PathVariable Long docId,
@@ -79,19 +94,6 @@ public class DocsController {
     Map<String, Object> data = new HashMap<>();
     data.put("uploadResults", uploadResults);
     return HttpResponse.success("上传图片成功！", data);
-  }
-
-  @PostMapping("/")
-  public HttpResponse newDoc(
-      @RequestBody Map<String, String> requestBody
-  ) {
-    Long userId = Long.parseLong(requestBody.get("userId"));
-    try {
-      DocumentViewData viewData = documentService.initializeNewDocument(userId);
-      return HttpResponse.success("新建文档成功！", viewData);
-    } catch (Exception e) {
-      return HttpResponse.fail("新建文档失败: " + e.getMessage());
-    }
   }
 
   @PutMapping("/meta")

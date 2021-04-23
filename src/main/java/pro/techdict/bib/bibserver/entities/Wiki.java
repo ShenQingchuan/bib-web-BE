@@ -16,6 +16,7 @@ public class Wiki extends BaseEntity<Long> {
   String name; // 知识库名
   String description; // 知识库介绍
   Boolean isPrivate; // 是否私有库
+  Boolean publicSharing; // 是否公开共享阅读
 
   @ManyToOne
   @JsonIgnoreProperties({"createdWikis", "focusingWikis"})

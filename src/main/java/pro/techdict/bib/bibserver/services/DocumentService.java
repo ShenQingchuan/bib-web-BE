@@ -8,7 +8,7 @@ import pro.techdict.bib.bibserver.models.DocumentMetaModel;
 
 public interface DocumentService {
 
-  DocumentViewData initializeNewDocument(Long creatorId);
+  DocumentViewData initializeNewDocument(Long creatorId, Long wikiId);
 
   DocumentViewData getDocumentViewData(Long docId, Long userId);
 

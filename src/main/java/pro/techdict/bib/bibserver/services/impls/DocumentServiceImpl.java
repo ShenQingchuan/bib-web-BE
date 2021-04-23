@@ -4,17 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
-import pro.techdict.bib.bibserver.daos.DocumentCommentRepository;
-import pro.techdict.bib.bibserver.daos.DocumentRepository;
-import pro.techdict.bib.bibserver.daos.UserActivityRepository;
-import pro.techdict.bib.bibserver.daos.UserRepository;
+import pro.techdict.bib.bibserver.daos.*;
 import pro.techdict.bib.bibserver.dtos.DocShowInListDto;
 import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
-import pro.techdict.bib.bibserver.entities.Document;
-import pro.techdict.bib.bibserver.entities.DocumentComment;
-import pro.techdict.bib.bibserver.entities.UserAccount;
-import pro.techdict.bib.bibserver.entities.UserActivity;
+import pro.techdict.bib.bibserver.entities.*;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.models.CommentModel;
@@ -32,26 +26,35 @@ public class DocumentServiceImpl implements DocumentService {
   final DocumentRepository documentRepository;
   final UserActivityRepository userActivityRepository;
   final DocumentCommentRepository documentCommentRepository;
+  final WikiRepository wikiRepository;
 
   public DocumentServiceImpl(
       UserRepository userRepository,
       DocumentRepository documentRepository,
       UserActivityRepository userActivityRepository,
-      DocumentCommentRepository documentCommentRepository
-  ) {
+      DocumentCommentRepository documentCommentRepository,
+      WikiRepository wikiRepository) {
     this.userRepository = userRepository;
     this.documentRepository = documentRepository;
     this.userActivityRepository = userActivityRepository;
     this.documentCommentRepository = documentCommentRepository;
+    this.wikiRepository = wikiRepository;
   }
 
   @Override
-  public DocumentViewData initializeNewDocument(Long creatorId) {
+  public DocumentViewData initializeNewDocument(Long creatorId, Long wikiId) {
     Optional<UserAccount> creator = userRepository.findById(creatorId);
     if (creator.isPresent()) {
       Document newDocument = new Document();
       newDocument.setCreator(creator.get());
       newDocument.setCollaborators(new ArrayList<>());
+
+      // 如果 wikiId 不为 null，则表示是知识库文档
+      if (wikiId != null) {
+        Optional<Wiki> wiki = wikiRepository.findById(wikiId);
+        wiki.ifPresent(newDocument::setInWiki);
+      }
+
       Document savedDoc = documentRepository.save(newDocument);
 
       // 给用户添加一条创建文档的动态信息
@@ -62,9 +65,7 @@ public class DocumentServiceImpl implements DocumentService {
       userActivityRepository.save(createDocActivity);
 
       return DocumentViewData.fromEntity(savedDoc);
-    }
-
-    return null;
+    } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
   }
 
   @Override
