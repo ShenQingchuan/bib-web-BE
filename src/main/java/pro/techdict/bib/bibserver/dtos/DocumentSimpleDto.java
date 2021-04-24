@@ -15,6 +15,7 @@ public class DocumentSimpleDto {
   UserSimpleDto creator;
   Boolean inWiki;
   String wikiName;
+  Long updateTime;
 
   static DocumentSimpleDto fromEntity(Document docEntity) {
     Wiki inWiki = docEntity.getInWiki();
@@ -24,7 +25,8 @@ public class DocumentSimpleDto {
         docEntity.getContentAbstract(),
         UserSimpleDto.fromEntity(docEntity.getCreator()),
         inWiki != null,
-        inWiki != null ? docEntity.getInWiki().getName() : null
+        inWiki != null ? docEntity.getInWiki().getName() : null,
+        docEntity.getUpdateTime().getTime()
     );
   }
 

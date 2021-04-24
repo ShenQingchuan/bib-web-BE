@@ -25,6 +25,17 @@ public class WikiController {
     );
   }
 
+  @GetMapping("/")
+  public HttpResponse getWikiViewData(
+      @RequestParam Long wikiId,
+      @RequestParam(required = false) Long userId
+  ) {
+    return HttpResponse.success(
+        "获取知识库数据成功！",
+        wikiService.getWikiViewData(wikiId, userId)
+    );
+  }
+
   @GetMapping("/myAll")
   public HttpResponse getAllMyRelativeWikis(
     @RequestParam Long userId,
