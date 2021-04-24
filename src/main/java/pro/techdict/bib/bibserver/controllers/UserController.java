@@ -6,6 +6,7 @@ import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
+import pro.techdict.bib.bibserver.models.FollowUserModel;
 import pro.techdict.bib.bibserver.services.PasswordRetrieveService;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
@@ -122,4 +123,17 @@ public class UserController {
       return HttpResponse.error(e);
     }
   }
+
+  @PostMapping("/follow")
+  public HttpResponse triggerFollowUserByName(
+      @RequestBody FollowUserModel followUserModel
+  ) {
+    if (userService.triggerFollowUser(
+        followUserModel.getSrcUid(),
+        followUserModel.getTargetUserName())
+    ) {
+      return HttpResponse.success("关注/取关 用户请求成功！");
+    } else return HttpResponse.fail("关注/取关 用户请求失败！");
+  }
+
 }

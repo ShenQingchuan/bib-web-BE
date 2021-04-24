@@ -37,7 +37,13 @@ public class UserAccount extends BaseEntity<Long> {
   UserDetails userDetails; // 一用户对一详细信息
 
   @ManyToMany
+  @JoinTable(name="user_following_relations",
+      joinColumns={@JoinColumn(name="follower_id")},
+      inverseJoinColumns={@JoinColumn(name="following_id")})
   List<UserAccount> followers; // 多用户对多用户（关注者）
+
+  @ManyToMany(mappedBy = "followers")
+  List<UserAccount> followings;
 
   // ———————— 用户 & 组织
 

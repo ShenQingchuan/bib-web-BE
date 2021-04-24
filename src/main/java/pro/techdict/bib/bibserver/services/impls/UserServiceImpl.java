@@ -16,12 +16,14 @@ import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.daos.UserDetailsRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
+import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
+import reactor.util.annotation.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,16 +90,34 @@ public class UserServiceImpl implements UserService {
     return false;
   }
 
-  @Override
-  public UserDetails getUserDetailsById(Long userId) {
-    Optional<UserAccount> userAccount = userRepository.findById(userId);
-    return userAccount.map(UserAccount::getUserDetails).orElse(null);
-  }
+  private UserDetailsFullDto getUserDetailsFullDto(@Nullable Long readerId, Optional<UserAccount> user) {
+    if (user.isPresent()) {
+      UserDetailsFullDto detailsFullDto = UserDetailsFullDto.fromEntity(
+          user.get().getUserDetails()).setFAndSCount(user.get()
+      );
 
+      if (readerId != null) {
+        Optional<UserAccount> reader = userRepository.findById(readerId);
+        if (reader.isPresent()) {
+          detailsFullDto.setIsFollowing(
+              user.get().getFollowers().contains(reader.get())
+          );
+        } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+      }
+
+      return detailsFullDto;
+
+    } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+  }
   @Override
-  public UserDetails getUserDetailsByName(String userName) {
-    Optional<UserAccount> userAccount = userRepository.findByUserName(userName);
-    return userAccount.map(UserAccount::getUserDetails).orElse(null);
+  public UserDetailsFullDto getUserDetailsById(Long userId, @Nullable Long readerId) {
+    Optional<UserAccount> user = userRepository.findById(userId);
+    return getUserDetailsFullDto(readerId, user);
+  }
+  @Override
+  public UserDetailsFullDto getUserDetailsByName(String userName, @Nullable Long readerId) {
+    Optional<UserAccount> user = userRepository.findByUserName(userName);
+    return getUserDetailsFullDto(readerId, user);
   }
 
   @Override
@@ -183,19 +203,19 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean followUser(Long srcUid, Long targetUid) {
+  public boolean triggerFollowUser(Long srcUid, String targetUserName) {
     Optional<UserAccount> srcUser = userRepository.findById(srcUid);
     if (srcUser.isPresent()) {
-      Optional<UserAccount> targetUser = userRepository.findById(targetUid);
+      Optional<UserAccount> targetUser = userRepository.findByUserName(targetUserName);
       if (targetUser.isPresent()) {
-        srcUser.get().getFollowers().add(targetUser.get());
-        userRepository.save(srcUser.get());
+        boolean hasUnFollowed = targetUser.get().getFollowers()
+            .removeIf(user -> user.getId().equals(srcUid));
+        if (!hasUnFollowed) {
+          targetUser.get().getFollowers().add(srcUser.get());
+        }
+        userRepository.save(targetUser.get());
         return true;
-      }
-
-      return false;
-    }
-
-    return false;
+      } throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+    } throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
   }
 }

@@ -2,8 +2,10 @@ package pro.techdict.bib.bibserver.services;
 
 import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
+import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
+import reactor.util.annotation.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -28,14 +30,15 @@ public interface UserService {
   List<OrgSimpleDto> getJoinedOrgsByName(String userName);
 
   // 关注其他用户
-  boolean followUser(Long srcUid, Long targetUid);
+  boolean triggerFollowUser(Long srcUid, String targetUserName);
 
   // —————— 用户详细信息相关：
 
   // 获取用户详细信息
-  UserDetails getUserDetailsById(Long userId);
-  UserDetails getUserDetailsByName(String userName);
+  UserDetailsFullDto getUserDetailsById(Long userId, @Nullable Long readerId);
+  UserDetailsFullDto getUserDetailsByName(String userName, @Nullable Long readerId);
 
   // 更新用户详细信息
   UserDetails updateUserDetails(Map<String, String> newDetailsData);
+
 }

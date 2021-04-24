@@ -2,6 +2,7 @@ package pro.techdict.bib.bibserver.controllers;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.services.TencentCOSService;
 import pro.techdict.bib.bibserver.services.UserService;
@@ -30,12 +31,14 @@ public class UserDetailsController {
 
   @GetMapping("/")
   public HttpResponse getUserDetails(
-      @RequestParam(value = "uid", required = false) Long uid,
-      @RequestParam(value = "userName", required = false) String userName
+      @RequestParam(required = false) Long uid,
+      @RequestParam(required = false) String userName,
+      @RequestParam(required = false) Long readerId
   ) {
-    UserDetails userDetails = uid != null
-        ? userService.getUserDetailsById(uid)
-        : userService.getUserDetailsByName(userName);
+    UserDetailsFullDto userDetails = uid != null
+        ? userService.getUserDetailsById(uid, readerId)
+        : userService.getUserDetailsByName(userName, readerId);
+
     if (userDetails != null) {
       return HttpResponse.success("获取用户详细信息成功！", userDetails);
     } else return HttpResponse.fail("未找到该用户的详细信息！");
