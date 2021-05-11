@@ -7,6 +7,7 @@ public enum CustomExceptionType {
     WIKI_NOT_FOUND_ERROR(400, "该知识库不存在！"),
     ORG_NOT_FOUND_ERROR(400, "该团队不存在！"),
     TOKEN_EXPIRED_ERROR(401, "您的令牌已经过期，请重新登录！"),
+    TOKEN_PARSE_ERROR(3401, "请求所携带令牌因格式不合法解析失败！"),
     UNAUTHORIZED_ERROR(401, "您还没有登录，无法访问该接口！"),
     DOCUMENT_NOT_FOUND(6404, "该文档不存在！"),
     VERIFY_CODE_NOT_EXISTS(9404, "该验证码不存在！"),

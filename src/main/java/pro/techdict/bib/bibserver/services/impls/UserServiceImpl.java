@@ -8,22 +8,28 @@ import com.tencentcloudapi.common.profile.HttpProfile;
 import com.tencentcloudapi.sms.v20190711.SmsClient;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsRequest;
 import com.tencentcloudapi.sms.v20190711.models.SendSmsResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
+import pro.techdict.bib.bibserver.configs.JWTProperties;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
 import pro.techdict.bib.bibserver.daos.UserActivityRepository;
 import pro.techdict.bib.bibserver.daos.UserDetailsRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
+import pro.techdict.bib.bibserver.dtos.UserDetailsSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 import pro.techdict.bib.bibserver.services.RedisService;
 import pro.techdict.bib.bibserver.services.UserService;
+import pro.techdict.bib.bibserver.utils.JWTUtils;
 import reactor.util.annotation.Nullable;
 
 import java.util.*;
@@ -38,6 +44,7 @@ public class UserServiceImpl implements UserService {
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final TencentCloudProperties tencentCloudProperties;
   private final UserActivityRepository userActivityRepository;
+  private final JWTProperties jwtProperties;
 
   public final static String smsCodePrefix = "SMSCode:+86";
 
@@ -46,13 +53,14 @@ public class UserServiceImpl implements UserService {
       UserRepository userRepository,
       UserDetailsRepository detailsRepository,
       TencentCloudProperties tencentCloudProperties,
-      UserActivityRepository userActivityRepository) {
+      UserActivityRepository userActivityRepository, JWTProperties jwtProperties) {
     this.redisService = redisService;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.userRepository = userRepository;
     this.detailsRepository = detailsRepository;
     this.tencentCloudProperties = tencentCloudProperties;
     this.userActivityRepository = userActivityRepository;
+    this.jwtProperties = jwtProperties;
   }
 
   @Override
@@ -124,7 +132,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetails updateUserDetails(Map<String, String> newDetailsData) {
+  public UserDetailsSimpleDto updateUserDetails(Map<String, String> newDetailsData) {
     Long uid = Long.parseLong(newDetailsData.get("userId"));
     Optional<UserAccount> user = userRepository.findById(uid);
     if (user.isPresent()) {
@@ -134,14 +142,29 @@ public class UserServiceImpl implements UserService {
           introduce = newDetailsData.get("introduce"),
           profession = newDetailsData.get("profession");
       if (!StringUtils.isNullOrEmpty(address)) { details.setAddress(address); }
-      if (!StringUtils.isNullOrEmpty(avatarURL)) { details.setAvatarURL(avatarURL); }
       if (!StringUtils.isNullOrEmpty(introduce)) { details.setIntroduce(introduce); }
       if (!StringUtils.isNullOrEmpty(profession)) { details.setProfession(profession); }
+      if (!StringUtils.isNullOrEmpty(avatarURL)) {
+        if (!details.getAvatarURL().equals(avatarURL)) details.setAvatarURL(avatarURL);
+      }
+      return UserDetailsSimpleDto.fromEntity(detailsRepository.save(details));
+    } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+  }
 
-      return detailsRepository.save(details);
-    }
-
-    return null;
+  @Override
+  public String updateAvatarURLForToken(String originToken, String avatarURL) {
+    Claims claims = JWTUtils.parserToken(originToken.substring(7), jwtProperties);
+    if (claims != null) {
+      claims.put("avatarURL", avatarURL);
+      Optional<UserAccount> user = userRepository.findByUserName(claims.getSubject());
+      if (user.isPresent()) {
+        user.get().getUserDetails().setAvatarURL(avatarURL);
+        userRepository.save(user.get());
+      } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+      return Jwts.builder()
+          .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
+          .addClaims(claims).compact();
+    } else throw new CustomException(CustomExceptionType.TOKEN_PARSE_ERROR);
   }
 
   @Override

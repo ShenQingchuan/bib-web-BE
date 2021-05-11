@@ -3,8 +3,8 @@ package pro.techdict.bib.bibserver.services;
 import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
+import pro.techdict.bib.bibserver.dtos.UserDetailsSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
-import pro.techdict.bib.bibserver.entities.UserDetails;
 import reactor.util.annotation.Nullable;
 
 import java.util.List;
@@ -39,6 +39,8 @@ public interface UserService {
   UserDetailsFullDto getUserDetailsByName(String userName, @Nullable Long readerId);
 
   // 更新用户详细信息
-  UserDetails updateUserDetails(Map<String, String> newDetailsData);
+  UserDetailsSimpleDto updateUserDetails(Map<String, String> newDetailsData);
 
+  // 因为用户重新上传头像因此更新 token 内容，但不延长其有效时间
+  String updateAvatarURLForToken(String originToken, String avatarURL);
 }

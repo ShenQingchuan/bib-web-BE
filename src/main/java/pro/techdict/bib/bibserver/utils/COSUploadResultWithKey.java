@@ -12,4 +12,8 @@ public class COSUploadResultWithKey {
     this.key = key;
     this.putObjectResult = putObjectResult;
   }
+
+  public String getFullURL() {
+    return "https://techdict-1257165552.cos.ap-shanghai.myqcloud.com/" + this.key;
+  }
 }
