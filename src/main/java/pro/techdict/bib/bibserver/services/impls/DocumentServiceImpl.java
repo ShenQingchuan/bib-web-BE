@@ -5,7 +5,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
 import pro.techdict.bib.bibserver.daos.*;
-import pro.techdict.bib.bibserver.dtos.DocShowInListDto;
+import pro.techdict.bib.bibserver.dtos.DocShowInListItemDto;
 import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.entities.*;
@@ -47,7 +47,9 @@ public class DocumentServiceImpl implements DocumentService {
     if (creator.isPresent()) {
       Document newDocument = new Document();
       newDocument.setCreator(creator.get());
-      newDocument.setCollaborators(new ArrayList<>());
+      ArrayList<UserAccount> collaborators = new ArrayList<>();
+      collaborators.add(creator.get());
+      newDocument.setCollaborators(collaborators);
 
       // 如果 wikiId 不为 null，则表示是知识库文档
       if (wikiId != null) {
@@ -71,7 +73,7 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public DocumentViewData getDocumentViewData(Long docId, Long userId) {
     Optional<Document> doc = documentRepository.findById(docId);
-    return doc.map(document -> DocumentViewData.fromEntity(document).setThumbsUpedByUserId(userId)).orElse(null);
+    return doc.map(document -> DocumentViewData.fromEntity(document).setIsThumbsUpedByUserId(userId)).orElse(null);
   }
 
   @Override
@@ -88,7 +90,7 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public DocShowInListDto getRecentRelativeDocumentList(Long userId, int pageNum) {
+  public DocShowInListItemDto getRecentRelativeDocumentList(Long userId, int pageNum) {
     Pageable pageable = PageRequest.of(pageNum, 10);
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
@@ -107,7 +109,7 @@ public class DocumentServiceImpl implements DocumentService {
           pageable,
           allRelativeDocs.size()
       );
-      return DocShowInListDto.fromEntities(
+      return DocShowInListItemDto.fromEntities(
           userId,
           documentsByPage.getContent(),
           documentsByPage.getTotalPages()
@@ -118,7 +120,7 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public DocShowInListDto getThumbsUpedDocumentList(Long userId, int pageNum) {
+  public DocShowInListItemDto getThumbsUpedDocumentList(Long userId, int pageNum) {
     Pageable pageable = PageRequest.of(pageNum, 10);
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
@@ -128,7 +130,7 @@ public class DocumentServiceImpl implements DocumentService {
           pageable,
           likedDocs.size()
       );
-      return DocShowInListDto.fromEntities(
+      return DocShowInListItemDto.fromEntities(
           userId,
           documentsByPage.getContent(),
           documentsByPage.getTotalPages()

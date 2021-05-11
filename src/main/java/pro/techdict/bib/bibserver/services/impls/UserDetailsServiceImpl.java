@@ -25,12 +25,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Optional<UserAccount> userAccount = userRepository.findByUserName(userName);
-        if (userAccount.isEmpty()) {
-            throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
-        }
-        // update lastLoginTime
+        if (userAccount.isEmpty()) throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
         Date now = new Date();
-        userAccount.get().setLastLoginTime(now);
+        userAccount.get().setLastLoginTime(now); // 更新登录时间
         UserAccount updated = userRepository.save(userAccount.get());
 
         return new JWTUserDetails(updated);

@@ -28,11 +28,11 @@ public class WikiController {
   @GetMapping("/")
   public HttpResponse getWikiViewData(
       @RequestParam Long wikiId,
-      @RequestParam(required = false) Long userId
+      @RequestParam(required = false) Long readerId
   ) {
     return HttpResponse.success(
         "获取知识库数据成功！",
-        wikiService.getWikiViewData(wikiId, userId)
+        wikiService.getWikiViewData(wikiId, readerId)
     );
   }
 

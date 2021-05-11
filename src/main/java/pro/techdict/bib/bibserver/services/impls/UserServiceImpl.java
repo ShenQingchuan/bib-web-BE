@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.configs.TencentCloudProperties;
+import pro.techdict.bib.bibserver.daos.UserActivityRepository;
 import pro.techdict.bib.bibserver.daos.UserDetailsRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
   private final UserDetailsRepository detailsRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final TencentCloudProperties tencentCloudProperties;
+  private final UserActivityRepository userActivityRepository;
 
   public final static String smsCodePrefix = "SMSCode:+86";
 
@@ -43,13 +45,14 @@ public class UserServiceImpl implements UserService {
       RedisService redisService, BCryptPasswordEncoder bCryptPasswordEncoder,
       UserRepository userRepository,
       UserDetailsRepository detailsRepository,
-      TencentCloudProperties tencentCloudProperties
-  ) {
+      TencentCloudProperties tencentCloudProperties,
+      UserActivityRepository userActivityRepository) {
     this.redisService = redisService;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.userRepository = userRepository;
     this.detailsRepository = detailsRepository;
     this.tencentCloudProperties = tencentCloudProperties;
+    this.userActivityRepository = userActivityRepository;
   }
 
   @Override
@@ -213,7 +216,17 @@ public class UserServiceImpl implements UserService {
         if (!hasUnFollowed) {
           targetUser.get().getFollowers().add(srcUser.get());
         }
-        userRepository.save(targetUser.get());
+        UserAccount savedTargetUser = userRepository.save(targetUser.get());
+
+        /*
+         TODO 启动 redis 定时任务：当中 如果没有 1分钟内 立即取消关注则发送 动态时间
+            UserActivity focusUserActivity = new UserActivity();
+            focusUserActivity.setActivityType(USER_ACTIVITY_TYPES.FOCUS_USER);
+            focusUserActivity.setCreator(srcUser.get());
+            focusUserActivity.setFocusedUser(savedTargetUser);
+            userActivityRepository.save(focusUserActivity);
+        */
+
         return true;
       } throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
     } throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);

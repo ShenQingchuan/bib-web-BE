@@ -3,7 +3,7 @@ package pro.techdict.bib.bibserver.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.techdict.bib.bibserver.dtos.DocShowInListDto;
+import pro.techdict.bib.bibserver.dtos.DocShowInListItemDto;
 import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.models.CommentModel;
@@ -77,7 +77,7 @@ public class DocsController {
       @RequestParam Long userId,
       @RequestParam int pageNum
   ) {
-    DocShowInListDto thumbsUpedDocumentList = documentService.getThumbsUpedDocumentList(userId, pageNum);
+    DocShowInListItemDto thumbsUpedDocumentList = documentService.getThumbsUpedDocumentList(userId, pageNum);
     return HttpResponse.success("获取点赞过的文档列表成功！", thumbsUpedDocumentList);
   }
 

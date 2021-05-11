@@ -10,7 +10,7 @@ public interface WikiService {
 
   WikiSimpleDto createNewWiki(CreateWikiFormModel formModel);
 
-  WikiViewDataDto getWikiViewData(Long wikiId, Long userId);
+  WikiViewDataDto getWikiViewData(Long wikiId, Long readerId);
 
   WikiListOnePageData getWikiShowList(Long userId, int pageNum);
 

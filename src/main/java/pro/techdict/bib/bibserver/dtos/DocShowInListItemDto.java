@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
-public class DocShowInListDto {
+public class DocShowInListItemDto {
 
   @AllArgsConstructor
   @NoArgsConstructor
@@ -65,11 +65,11 @@ public class DocShowInListDto {
   List<ListItem> items;
   int pageTotal;
 
-  public static DocShowInListDto fromEntities(Long userId, List<Document> docEntities, int pageTotal) {
+  public static DocShowInListItemDto fromEntities(Long userId, List<Document> docEntities, int pageTotal) {
     List<ListItem> listItems = docEntities.stream().map(
         doc -> ListItem.fromEntity(doc, userId)
     ).collect(Collectors.toList());
-    return new DocShowInListDto(listItems, pageTotal);
+    return new DocShowInListItemDto(listItems, pageTotal);
   }
 
 }

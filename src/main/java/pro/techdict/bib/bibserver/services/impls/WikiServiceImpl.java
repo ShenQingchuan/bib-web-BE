@@ -62,13 +62,13 @@ public class WikiServiceImpl implements WikiService {
   }
 
   @Override
-  public WikiViewDataDto getWikiViewData(Long wikiId, Long userId) {
-    if (userId == null) {
+  public WikiViewDataDto getWikiViewData(Long wikiId, Long readerId) {
+    if (readerId == null) {
       throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
     }
     Optional<Wiki> wiki = wikiRepository.findById(wikiId);
     if (wiki.isPresent()) {
-      return WikiViewDataDto.fromEntityAndUserId(wiki.get(), userId);
+      return WikiViewDataDto.fromEntityAndUserId(wiki.get(), readerId);
     } else {
       throw new CustomException(CustomExceptionType.WIKI_NOT_FOUND_ERROR);
     }

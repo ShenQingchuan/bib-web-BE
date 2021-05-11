@@ -4,22 +4,19 @@ import lombok.Data;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
 
-/**
- * 接口数据请求统一响应数据结构
- */
+/** 接口请求统一响应数据结构 */
 @Data
 public class HttpResponse {
     private boolean responseOk;  // 请求是否处理成功
     private int code; // 请求响应代码
     private String message;  // 请求结果描述信息
+    private boolean silence = false; // 请求返回后 前端是否静默（即可能不显示任何提示）
+    private Object data; // 请求结果数据（通常用于查询操作）
 
     public HttpResponse setSilence(boolean silence) {
         this.silence = silence;
         return this;
     }
-
-    private boolean silence = false; // 请求返回后 前端是否静默（即可能不显示任何提示）
-    private Object data; // 请求结果数据（通常用于查询操作）
 
     // 请求出现异常时的响应数据封装
     public static HttpResponse error(CustomException e) {
@@ -29,7 +26,6 @@ public class HttpResponse {
         r.setMessage(e.getMessage());
         return r;
     }
-
     // 请求出现异常时的响应数据封装
     public static HttpResponse error(CustomExceptionType customExceptionEnum,
                                      String errorMessage) {
@@ -39,7 +35,6 @@ public class HttpResponse {
         r.setMessage(errorMessage);
         return r;
     }
-
     // 指结果为负面情况，但不造成服务异常
     public static HttpResponse fail(String error) {
         HttpResponse HttpResponse = new HttpResponse();
@@ -65,7 +60,6 @@ public class HttpResponse {
         HttpResponse.setData(data);
         return HttpResponse;
     }
-    //
     public static HttpResponse success(String message) {
         HttpResponse HttpResponse = new HttpResponse();
         HttpResponse.setResponseOk(true);

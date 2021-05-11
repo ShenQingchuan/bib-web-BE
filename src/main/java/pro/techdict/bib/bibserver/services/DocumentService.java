@@ -1,6 +1,6 @@
 package pro.techdict.bib.bibserver.services;
 
-import pro.techdict.bib.bibserver.dtos.DocShowInListDto;
+import pro.techdict.bib.bibserver.dtos.DocShowInListItemDto;
 import pro.techdict.bib.bibserver.dtos.DocumentCommentDto;
 import pro.techdict.bib.bibserver.dtos.DocumentViewData;
 import pro.techdict.bib.bibserver.models.CommentModel;
@@ -14,9 +14,9 @@ public interface DocumentService {
 
   DocumentViewData setDocumentMeta(DocumentMetaModel metaModel);
 
-  DocShowInListDto getRecentRelativeDocumentList(Long userId, int pageNum);
+  DocShowInListItemDto getRecentRelativeDocumentList(Long userId, int pageNum);
 
-  DocShowInListDto getThumbsUpedDocumentList(Long userId, int pageNum);
+  DocShowInListItemDto getThumbsUpedDocumentList(Long userId, int pageNum);
 
   Boolean thumbsUpDocument(Long userId, Long docId);
 
