@@ -108,7 +108,7 @@ public class DocumentServiceImpl implements DocumentService {
       allRelativeDocs.addAll(collaborateDocs);
       allRelativeDocs.addAll(commentedDocs);
       List<Document> sortedList = allRelativeDocs.stream()
-          .sorted(Comparator.comparing(Document::getUpdateTime)).collect(Collectors.toList());
+          .sorted(Comparator.comparing(Document::getUpdateTime).reversed()).collect(Collectors.toList());
       var totalPages = (int) Math.ceil(sortedList.size() / 10.0);
       var startIndex = pageNum * 10;
       var endIndex = startIndex + 10;
