@@ -126,4 +126,15 @@ public class DocsController {
         : HttpResponse.fail("评论文档失败");
   }
 
+  @PatchMapping("/addCollaborator")
+  public HttpResponse addDocumentCollaborator(
+      @RequestParam("docId") Long docId,
+      @RequestParam("invitingUserId") Long invitingUserId
+  ) {
+    return HttpResponse.success(
+        "邀请新协作者成功！",
+        documentService.addDocumentCollaborator(docId, invitingUserId)
+    );
+  }
+
 }

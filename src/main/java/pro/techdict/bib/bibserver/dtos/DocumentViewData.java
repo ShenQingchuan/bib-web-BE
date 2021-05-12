@@ -1,7 +1,6 @@
 package pro.techdict.bib.bibserver.dtos;
 
 import lombok.Data;
-import pro.techdict.bib.bibserver.entities.BaseEntity;
 import pro.techdict.bib.bibserver.entities.Document;
 import pro.techdict.bib.bibserver.entities.DocumentComment;
 import pro.techdict.bib.bibserver.entities.UserAccount;
@@ -18,7 +17,7 @@ public class DocumentViewData {
   String contentAbstract;
   UserSimpleDto creator;
   List<UserSimpleDto> thumbUpUsers;
-  List<Long> collaborators;
+  List<UserSimpleDto> collaborators;
   List<DocumentCommentDto> comments;
   Boolean thumbsUped = false;
   WikiSimpleDto inWiki;
@@ -41,7 +40,7 @@ public class DocumentViewData {
     viewData.collaborators = Objects.requireNonNullElse(
         docEntity.getCollaborators(),
         new ArrayList<UserAccount>()
-    ).stream().map(BaseEntity::getId).collect(Collectors.toList());
+    ).stream().map(UserSimpleDto::fromEntity).collect(Collectors.toList());
 
     viewData.comments = Objects.requireNonNullElse(
         docEntity.getComments(),

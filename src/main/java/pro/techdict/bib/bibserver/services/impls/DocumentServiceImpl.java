@@ -1,7 +1,10 @@
 package pro.techdict.bib.bibserver.services.impls;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.beans.USER_ACTIVITY_TYPES;
 import pro.techdict.bib.bibserver.daos.*;
@@ -104,15 +107,19 @@ public class DocumentServiceImpl implements DocumentService {
       allRelativeDocs.addAll(createdDocs);
       allRelativeDocs.addAll(collaborateDocs);
       allRelativeDocs.addAll(commentedDocs);
-      Page<Document> documentsByPage = new PageImpl<>(
-          new ArrayList<>(allRelativeDocs),
-          pageable,
-          allRelativeDocs.size()
-      );
+      List<Document> sortedList = allRelativeDocs.stream()
+          .sorted(Comparator.comparing(Document::getUpdateTime)).collect(Collectors.toList());
+      var totalPages = (int) Math.ceil(sortedList.size() / 10.0);
+      var startIndex = pageNum * 10;
+      var endIndex = startIndex + 10;
+      if (endIndex > sortedList.size()) { // 若是最后一页则结束索引为集合的最后一个索引
+        endIndex = sortedList.size();
+      }
+
       return DocShowInListItemDto.fromEntities(
           userId,
-          documentsByPage.getContent(),
-          documentsByPage.getTotalPages()
+          sortedList.subList(startIndex, endIndex),
+          totalPages
       );
     }
 
@@ -188,4 +195,16 @@ public class DocumentServiceImpl implements DocumentService {
     return DocumentCommentDto.fromEntity(savedComment);
   }
 
+  @Override
+  public DocumentViewData addDocumentCollaborator(Long docId, Long invitingUserId) {
+    Optional<Document> doc = documentRepository.findById(docId);
+    if (doc.isPresent()) {
+      Optional<UserAccount> invitingUser = userRepository.findById(invitingUserId);
+      if (invitingUser.isPresent()) {
+        doc.get().getCollaborators().add(invitingUser.get());
+        Document savedDoc = documentRepository.save(doc.get());
+        return DocumentViewData.fromEntity(savedDoc);
+      } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+    } else throw new CustomException(CustomExceptionType.DOCUMENT_NOT_FOUND);
+  }
 }

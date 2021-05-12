@@ -23,6 +23,7 @@ import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsSimpleDto;
+import pro.techdict.bib.bibserver.dtos.UserSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
@@ -88,6 +89,12 @@ public class UserServiceImpl implements UserService {
   public UserAccount seekUserByEmail(String email) {
     Optional<UserAccount> user = userRepository.findByEmail(email);
     return user.orElse(null);
+  }
+
+  @Override
+  public List<UserSimpleDto> seekAllUserByName(String nameLike) {
+    var nameLikeList = userRepository.fetchAllUserByNameLike(nameLike);
+    return nameLikeList.stream().map(UserSimpleDto::fromEntity).collect(Collectors.toList());
   }
 
   @Override

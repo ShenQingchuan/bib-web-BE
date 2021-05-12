@@ -22,4 +22,6 @@ public interface DocumentService {
 
   DocumentCommentDto addCommentToDocument(CommentModel commentModel);
 
+  DocumentViewData addDocumentCollaborator(Long docId, Long invitingUserId);
+
 }

@@ -4,6 +4,7 @@ import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsSimpleDto;
+import pro.techdict.bib.bibserver.dtos.UserSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import reactor.util.annotation.Nullable;
 
@@ -17,8 +18,10 @@ public interface UserService {
   // 用户注册
   UserAccount registerUser(String userName, String password, String phone, String email);
 
-  // 通过邮箱找回用户
+  // 通过邮箱找用户
   UserAccount seekUserByEmail(String email);
+  // 通过用户名找用户
+  List<UserSimpleDto> seekAllUserByName(String nameLike);
 
   // 更改密码
   boolean changePassword(String email, String newPassword);

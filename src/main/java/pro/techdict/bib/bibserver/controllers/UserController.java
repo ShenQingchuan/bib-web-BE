@@ -63,6 +63,18 @@ public class UserController {
     return HttpResponse.success("注册成功！", newUserReturn);
   }
 
+  @GetMapping("/seekAllUserByName")
+  public HttpResponse seekAllUserByName(@RequestParam(value = "userName") String nameLike) {
+    var foundUser = userService.seekAllUserByName(nameLike);
+    if (foundUser.size() == 0) {
+      return HttpResponse.fail("未能找到用户！").setSilence(true);
+    }
+    return HttpResponse.success(
+        "成功找到用户！",
+        foundUser
+    );
+  }
+
   @GetMapping("/seekByEmail")
   public HttpResponse seekUserByEmail(@RequestParam(value = "email") String email) {
     UserAccount userAccount = userService.seekUserByEmail(email);
