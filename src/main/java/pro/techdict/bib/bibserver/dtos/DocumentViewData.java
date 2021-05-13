@@ -19,6 +19,7 @@ public class DocumentViewData {
   List<UserSimpleDto> thumbUpUsers;
   List<UserSimpleDto> collaborators;
   List<DocumentCommentDto> comments;
+  List<UserSimpleDto> pendingRequests;
   Boolean thumbsUped = false;
   WikiSimpleDto inWiki;
   Boolean publicSharing;
@@ -47,6 +48,11 @@ public class DocumentViewData {
         new ArrayList<DocumentComment>()
     ).stream().map(DocumentCommentDto::fromEntity).collect(Collectors.toList());
 
+    viewData.pendingRequests = Objects.requireNonNullElse(
+        docEntity.getPendingRequests(),
+        new ArrayList<UserAccount>()
+    ).stream().map(UserSimpleDto::fromEntity).collect(Collectors.toList());
+
     viewData.inWiki = WikiSimpleDto.fromEntity(docEntity.getInWiki());
     viewData.publicSharing = docEntity.getPublicSharing();
 
@@ -54,7 +60,11 @@ public class DocumentViewData {
   }
 
   public DocumentViewData setIsThumbsUpedByUserId(Long userId) {
-    this.setThumbsUped(this.thumbUpUsers.stream().anyMatch(user -> user.getUid().equals(userId)));
+    if (userId == -1) {
+      this.setThumbsUped(false);
+    } else {
+      this.setThumbsUped(this.thumbUpUsers.stream().anyMatch(user -> user.getUid().equals(userId)));
+    }
     return this;
   }
 

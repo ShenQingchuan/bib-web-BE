@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -20,16 +21,20 @@ public class Document extends BaseEntity<Long> {
   Boolean publicSharing = false; // 是否能分享为公开阅读
 
   @ManyToOne
-  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
+  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs", "joinRequests"})
   UserAccount creator; // 多文档对一用户（作者）
 
   @ManyToMany
-  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
+  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs", "joinRequests"})
   List<UserAccount> thumbUpUsers; // 多文档对多用户（点赞）
 
   @ManyToMany
-  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs"})
+  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs", "joinRequests"})
   List<UserAccount> collaborators; // 多文档对多用户（协作）
+
+  @OneToMany
+  @JsonIgnoreProperties({"createdDocs", "collaborateDocs", "likedDocs", "staredDocs", "joinRequests"})
+  Set<UserAccount> pendingRequests;
 
   @ManyToOne
   @JsonIgnoreProperties({"documents"})

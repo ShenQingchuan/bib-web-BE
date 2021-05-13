@@ -94,7 +94,6 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   public DocShowInListItemDto getRecentRelativeDocumentList(Long userId, int pageNum) {
-    Pageable pageable = PageRequest.of(pageNum, 10);
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
       var createdDocs = user.get().getCreatedDocs();
@@ -204,6 +203,33 @@ public class DocumentServiceImpl implements DocumentService {
         doc.get().getCollaborators().add(invitingUser.get());
         Document savedDoc = documentRepository.save(doc.get());
         return DocumentViewData.fromEntity(savedDoc);
+      } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+    } else throw new CustomException(CustomExceptionType.DOCUMENT_NOT_FOUND);
+  }
+
+  @Override
+  public Boolean addJoinRequest(Long docId, Long userId) {
+    Optional<Document> targetDoc = documentRepository.findById(docId);
+    if (targetDoc.isPresent()) {
+      Optional<UserAccount> sender = userRepository.findById(userId);
+      if (sender.isPresent()) {
+        targetDoc.get().getPendingRequests().add(sender.get());
+        documentRepository.save(targetDoc.get());
+        return true;
+      } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
+    } else throw new CustomException(CustomExceptionType.DOCUMENT_NOT_FOUND);
+  }
+
+  @Override
+  public Boolean passJoinRequest(Long docId, Long userId) {
+    Optional<Document> targetDoc = documentRepository.findById(docId);
+    if (targetDoc.isPresent()) {
+      Optional<UserAccount> sender = userRepository.findById(userId);
+      if (sender.isPresent()) {
+        targetDoc.get().getPendingRequests().remove(sender.get());
+        targetDoc.get().getCollaborators().add(sender.get());
+        documentRepository.save(targetDoc.get());
+        return true;
       } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
     } else throw new CustomException(CustomExceptionType.DOCUMENT_NOT_FOUND);
   }

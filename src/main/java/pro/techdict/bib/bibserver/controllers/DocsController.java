@@ -66,7 +66,10 @@ public class DocsController {
       @RequestParam Long userId
   ) {
     try {
-      return HttpResponse.success("获取文档信息成功！", documentService.getDocumentViewData(docId, userId));
+      return HttpResponse.success(
+          "获取文档信息成功！",
+          documentService.getDocumentViewData(docId, userId)
+      );
     } catch (Exception e) {
       return HttpResponse.fail("获取文档信息失败: " + e.getMessage());
     }
@@ -126,7 +129,7 @@ public class DocsController {
         : HttpResponse.fail("评论文档失败");
   }
 
-  @PatchMapping("/addCollaborator")
+  @PatchMapping("/collaborators")
   public HttpResponse addDocumentCollaborator(
       @RequestParam("docId") Long docId,
       @RequestParam("invitingUserId") Long invitingUserId
@@ -135,6 +138,26 @@ public class DocsController {
         "邀请新协作者成功！",
         documentService.addDocumentCollaborator(docId, invitingUserId)
     );
+  }
+
+  @PostMapping("/joinCollaborationRequest")
+  public HttpResponse createJoinRequest(
+      @RequestParam("docId") Long docId,
+      @RequestParam("userId") Long userId
+  ) {
+    return documentService.addJoinRequest(docId, userId)
+        ? HttpResponse.success("创建加入协作请求成功！")
+        : HttpResponse.fail("创建加入协作请求失败！");
+  }
+
+  @PatchMapping("/joinCollaborationRequest")
+  public HttpResponse passJoinRequest(
+      @RequestParam("docId") Long docId,
+      @RequestParam("userId") Long userId
+  ) {
+    return documentService.passJoinRequest(docId, userId)
+        ? HttpResponse.success("通过加入协作请求成功！")
+        : HttpResponse.fail("通过加入协作请求失败！");
   }
 
 }

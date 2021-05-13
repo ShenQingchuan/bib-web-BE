@@ -58,16 +58,20 @@ public class UserAccount extends BaseEntity<Long> {
   // ———————— 用户 & 文档
 
   @OneToMany(mappedBy = "creator")
-  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers"})
+  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers", "pendingRequests"})
   List<Document> createdDocs; // 一用户对多文档（创建的）
 
   @ManyToMany(mappedBy = "collaborators")
-  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers"})
+  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers", "pendingRequests"})
   List<Document> collaborateDocs; // 多协作者对多文档
 
   @ManyToMany(mappedBy = "thumbUpUsers")
-  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers"})
+  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers", "pendingRequests"})
   List<Document> likedDocs; // 多用户对多文档（点赞的）
+
+  @OneToMany
+  @JsonIgnoreProperties({"creator", "collaborators", "thumbUpUsers", "starUsers", "pendingRequests"})
+  List<Document> joinRequests;
 
   // ———————— 用户 & 知识库
 

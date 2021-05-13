@@ -24,4 +24,8 @@ public interface DocumentService {
 
   DocumentViewData addDocumentCollaborator(Long docId, Long invitingUserId);
 
+  Boolean addJoinRequest(Long docId, Long userId);
+
+  Boolean passJoinRequest(Long docId, Long userId);
+
 }
