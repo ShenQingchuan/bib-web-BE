@@ -45,7 +45,7 @@ public class UserDetailsController {
 
   @PostMapping("/")
   public HttpResponse updateUserDetails(@RequestBody Map<String, String> requestBody) {
-    var newDetails = userService.updateUserDetails(requestBody);
+    UserDetailsFullDto newDetails = userService.updateUserDetails(requestBody);
     if (newDetails != null) {
       return HttpResponse.success("修改用户资料成功！", newDetails);
     }
@@ -63,7 +63,7 @@ public class UserDetailsController {
             "bibweb/user-avatars/", Long.parseLong(userId)
         ), uploadFiles);
     Map<String, Object> data = new HashMap<>();
-    var newAvatar = uploadResults.get(0);
+    COSUploadResultWithKey newAvatar = uploadResults.get(0);
     data.put("newAvatar", newAvatar);
     data.put("newToken", userService.updateAvatarURLForToken(originToken, newAvatar.getFullURL()));
 

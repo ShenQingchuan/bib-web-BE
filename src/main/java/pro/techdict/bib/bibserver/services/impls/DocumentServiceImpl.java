@@ -96,21 +96,21 @@ public class DocumentServiceImpl implements DocumentService {
   public DocShowInListItemDto getRecentRelativeDocumentList(Long userId, int pageNum) {
     Optional<UserAccount> user = userRepository.findById(userId);
     if (user.isPresent()) {
-      var createdDocs = user.get().getCreatedDocs();
-      var collaborateDocs = user.get().getCollaborateDocs();
-      var commentedDocs = user.get().getCreatedComments().stream().map(
+      List<Document> createdDocs = user.get().getCreatedDocs();
+      List<Document> collaborateDocs = user.get().getCollaborateDocs();
+      List<Document> commentedDocs = user.get().getCreatedComments().stream().map(
           DocumentComment::getTarget
       ).collect(Collectors.toList());
 
-      var allRelativeDocs = new HashSet<Document>();
+      Set<Document> allRelativeDocs = new HashSet<>();
       allRelativeDocs.addAll(createdDocs);
       allRelativeDocs.addAll(collaborateDocs);
       allRelativeDocs.addAll(commentedDocs);
       List<Document> sortedList = allRelativeDocs.stream()
           .sorted(Comparator.comparing(Document::getUpdateTime).reversed()).collect(Collectors.toList());
-      var totalPages = (int) Math.ceil(sortedList.size() / 10.0);
-      var startIndex = pageNum * 10;
-      var endIndex = startIndex + 10;
+      int totalPages = (int) Math.ceil(sortedList.size() / 10.0);
+      int startIndex = pageNum * 10;
+      int endIndex = startIndex + 10;
       if (endIndex > sortedList.size()) { // 若是最后一页则结束索引为集合的最后一个索引
         endIndex = sortedList.size();
       }
@@ -171,9 +171,9 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   public DocumentCommentDto addCommentToDocument(CommentModel commentModel) {
-    var newComment = new DocumentComment();
-    var creator = userRepository.findById(commentModel.getCreatorId());
-    var doc = documentRepository.findById(commentModel.getDocId());
+    DocumentComment newComment = new DocumentComment();
+    Optional<UserAccount> creator = userRepository.findById(commentModel.getCreatorId());
+    Optional<Document> doc = documentRepository.findById(commentModel.getDocId());
 
     if (creator.isEmpty()) throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
     if (doc.isEmpty()) throw new CustomException(CustomExceptionType.DOCUMENT_NOT_FOUND);
@@ -182,12 +182,12 @@ public class DocumentServiceImpl implements DocumentService {
     newComment.setCreator(creator.get());
 
     if (commentModel.getReplyToId() != null) {
-      var replyTo = documentCommentRepository.findById(commentModel.getReplyToId());
+      Optional<DocumentComment> replyTo = documentCommentRepository.findById(commentModel.getReplyToId());
       replyTo.ifPresent(newComment::setReplyTo);
     }
 
     newComment.setTarget(doc.get());
-    var savedComment = documentCommentRepository.save(newComment);
+    DocumentComment savedComment = documentCommentRepository.save(newComment);
 
     doc.get().getComments().add(savedComment);
     documentRepository.save(doc.get());

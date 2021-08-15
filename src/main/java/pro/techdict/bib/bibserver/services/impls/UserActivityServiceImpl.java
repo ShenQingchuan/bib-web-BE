@@ -31,7 +31,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     List<UserActivityDto> activities = pageableActivities.getContent().stream().map(
         UserActivityDto::fromEntity
     ).collect(Collectors.toList());
-    var onePageDto = new UserActivitiesOnePageDto();
+    UserActivitiesOnePageDto onePageDto = new UserActivitiesOnePageDto();
     onePageDto.setActivities(activities);
     onePageDto.setPageTotal(pageableActivities.getTotalPages());
 

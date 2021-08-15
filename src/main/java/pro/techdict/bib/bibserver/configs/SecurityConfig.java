@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+        corsConfiguration.addAllowedOrigin("https://bib.techdict.pro");
         // 同时允许 put/patch/delete 三种
         corsConfiguration.addAllowedMethod(HttpMethod.PUT.name());
         corsConfiguration.addAllowedMethod(HttpMethod.PATCH.name());

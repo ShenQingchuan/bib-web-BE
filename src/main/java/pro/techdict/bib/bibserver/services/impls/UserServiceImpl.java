@@ -22,7 +22,6 @@ import pro.techdict.bib.bibserver.daos.UserDetailsRepository;
 import pro.techdict.bib.bibserver.daos.UserRepository;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
 import pro.techdict.bib.bibserver.dtos.UserDetailsFullDto;
-import pro.techdict.bib.bibserver.dtos.UserDetailsSimpleDto;
 import pro.techdict.bib.bibserver.dtos.UserSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.entities.UserDetails;
@@ -93,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UserSimpleDto> seekAllUserByName(String nameLike) {
-    var nameLikeList = userRepository.fetchAllUserByNameLike(nameLike);
+    List<UserAccount> nameLikeList = userRepository.fetchAllUserByNameLike(nameLike);
     return nameLikeList.stream().map(UserSimpleDto::fromEntity).collect(Collectors.toList());
   }
 
@@ -139,7 +138,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetailsSimpleDto updateUserDetails(Map<String, String> newDetailsData) {
+  public UserDetailsFullDto updateUserDetails(Map<String, String> newDetailsData) {
     Long uid = Long.parseLong(newDetailsData.get("userId"));
     Optional<UserAccount> user = userRepository.findById(uid);
     if (user.isPresent()) {
@@ -154,7 +153,8 @@ public class UserServiceImpl implements UserService {
       if (!StringUtils.isNullOrEmpty(avatarURL)) {
         if (!details.getAvatarURL().equals(avatarURL)) details.setAvatarURL(avatarURL);
       }
-      return UserDetailsSimpleDto.fromEntity(detailsRepository.save(details));
+      UserDetails savedDetails = detailsRepository.save(details);
+      return UserDetailsFullDto.fromEntity(savedDetails);
     } else throw new CustomException(CustomExceptionType.USER_NOT_FOUND_ERROR);
   }
 

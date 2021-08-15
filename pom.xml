@@ -15,7 +15,7 @@
     <description>Bib cloud document backend server project</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>13</java.version>
     </properties>
 
     <dependencies>
@@ -121,6 +121,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.2.6</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -155,9 +160,45 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <fork>true</fork>
+                    <executable>true</executable>
+                </configuration>
+            </plugin>
+            <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <configuration>
+                <!-- 镜像名字 不能含有大写字母 -->
+                <imageName>${project.artifactId}</imageName>
+                <!--Dockerfile 所在位置-->
+                <dockerDirectory>${project.basedir}/src</dockerDirectory>
+                <resources>
+                    <resource>
+                        <targetPath>/</targetPath>
+                        <!--target 所在位置-->
+                        <directory>${project.build.directory}</directory>
+                        <!--将 jar 包和 Dockerfile 放在统一目录-->
+                        <include>${project.build.finalName}.jar</include>
+                    </resource>
+                </resources>
+            </configuration>
+        </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <!--声明 properties 等配置文件编译位置-->
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
     <repositories>

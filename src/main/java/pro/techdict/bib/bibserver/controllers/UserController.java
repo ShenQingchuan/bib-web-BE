@@ -3,6 +3,7 @@ package pro.techdict.bib.bibserver.controllers;
 import org.springframework.web.bind.annotation.*;
 import pro.techdict.bib.bibserver.beans.DUPLICATE_TYPES;
 import pro.techdict.bib.bibserver.dtos.OrgSimpleDto;
+import pro.techdict.bib.bibserver.dtos.UserSimpleDto;
 import pro.techdict.bib.bibserver.entities.UserAccount;
 import pro.techdict.bib.bibserver.exceptions.CustomException;
 import pro.techdict.bib.bibserver.exceptions.CustomExceptionType;
@@ -65,7 +66,7 @@ public class UserController {
 
   @GetMapping("/seekAllUserByName")
   public HttpResponse seekAllUserByName(@RequestParam(value = "userName") String nameLike) {
-    var foundUser = userService.seekAllUserByName(nameLike);
+    List<UserSimpleDto> foundUser = userService.seekAllUserByName(nameLike);
     if (foundUser.size() == 0) {
       return HttpResponse.fail("未能找到用户！").setSilence(true);
     }
