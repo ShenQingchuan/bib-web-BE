@@ -42,9 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // TODO: 列出所有公开公共接口...
                 .antMatchers(
-                    "/user/register",
-                    "/user/sendSmsCode",
-                    "/docs/{docId}"
+                    "/user/register", // 用户注册
+                    "/user/sendSmsCode", // 发送短信验证
+                    "/user/seekByEmail", // 用邮箱找回密码
+                    "/docs/{docId}" // 获取文档视图数据,
                 ).permitAll()
                 // 其他都验证
                 .anyRequest().authenticated()
