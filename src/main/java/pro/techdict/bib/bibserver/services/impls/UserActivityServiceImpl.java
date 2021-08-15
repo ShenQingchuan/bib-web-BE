@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pro.techdict.bib.bibserver.daos.UserActivityRepository;
-import pro.techdict.bib.bibserver.dtos.UserActivitiesOnePageDto;
+import pro.techdict.bib.bibserver.dtos.PageDto;
 import pro.techdict.bib.bibserver.dtos.UserActivityDto;
 import pro.techdict.bib.bibserver.entities.UserActivity;
 import pro.techdict.bib.bibserver.services.UserActivityService;
@@ -24,15 +24,15 @@ public class UserActivityServiceImpl implements UserActivityService {
   }
 
   @Override
-  public UserActivitiesOnePageDto getUserActivities(String userName, int pageNum) {
+  public PageDto<UserActivityDto> getUserActivities(String userName, int pageNum) {
     Pageable pageable = PageRequest.of(pageNum, 10, Sort.Direction.DESC, "createTime");
     Page<UserActivity> pageableActivities = userActivityRepository.fetchPageableActivities(userName, pageable);
 
     List<UserActivityDto> activities = pageableActivities.getContent().stream().map(
         UserActivityDto::fromEntity
     ).collect(Collectors.toList());
-    UserActivitiesOnePageDto onePageDto = new UserActivitiesOnePageDto();
-    onePageDto.setActivities(activities);
+    PageDto<UserActivityDto> onePageDto = new PageDto<>();
+    onePageDto.setItems(activities);
     onePageDto.setPageTotal(pageableActivities.getTotalPages());
 
     return onePageDto;

@@ -1,9 +1,6 @@
 package pro.techdict.bib.bibserver.services;
 
-import pro.techdict.bib.bibserver.dtos.DocShowInWikiOnePageDto;
-import pro.techdict.bib.bibserver.dtos.WikiListOnePageData;
-import pro.techdict.bib.bibserver.dtos.WikiSimpleDto;
-import pro.techdict.bib.bibserver.dtos.WikiViewDataDto;
+import pro.techdict.bib.bibserver.dtos.*;
 import pro.techdict.bib.bibserver.models.CreateWikiFormModel;
 
 public interface WikiService {
@@ -12,8 +9,8 @@ public interface WikiService {
 
   WikiViewDataDto getWikiViewData(Long wikiId, Long readerId);
 
-  WikiListOnePageData getWikiShowList(Long userId, int pageNum);
+  PageDto<WikiListItemDataDto> getWikiShowList(Long userId, int pageNum);
 
-  DocShowInWikiOnePageDto getWikiAllDocsByPage(Long wikiId, int pageNum);
+  PageDto<DocShowInWikiListDto> getWikiAllDocsByPage(Long wikiId, int pageNum);
 
 }

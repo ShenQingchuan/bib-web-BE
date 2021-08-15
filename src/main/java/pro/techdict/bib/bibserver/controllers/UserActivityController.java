@@ -4,7 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pro.techdict.bib.bibserver.dtos.UserActivitiesOnePageDto;
+import pro.techdict.bib.bibserver.dtos.PageDto;
+import pro.techdict.bib.bibserver.dtos.UserActivityDto;
 import pro.techdict.bib.bibserver.services.UserActivityService;
 import pro.techdict.bib.bibserver.utils.HttpResponse;
 
@@ -23,7 +24,7 @@ public class UserActivityController {
       @RequestParam String userName,
       @RequestParam int pageNum
   ) {
-    UserActivitiesOnePageDto userActivitiesOnePageDto = userActivityService.getUserActivities(userName, pageNum);
+    PageDto<UserActivityDto> userActivitiesOnePageDto = userActivityService.getUserActivities(userName, pageNum);
     return HttpResponse.success("获取用户动态成功！", userActivitiesOnePageDto);
   }
 
