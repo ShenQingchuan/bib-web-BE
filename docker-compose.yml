@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  bibserverMariadb:
+    image: mariadb:latest
+    container_name: bibserverMariadb
+    hostname: bibserverMariadb
+    restart: always
+    ports: 
+      - 3306:3306
+    volumes: 
+      - ~/bib/data/mysql/:/var/lib/mysql
+    environment: 
+      - MYSQL_ROOT_PASSWORD=qcfq0314
+  bibserverRedis:
+    restart: always
+    image: redis:latest
+    container_name: bibserverRedis
+    hostname: bibserverRedis
+    ports: 
+      - 6379:6379
+    volumes: 
+      - ~/bib/data/redis:/data
